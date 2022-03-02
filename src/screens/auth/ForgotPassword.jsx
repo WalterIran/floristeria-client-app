@@ -1,53 +1,48 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable } from 'react-native';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
-const Login = () => {
+const ForgotPassword = () => {
     const navigation = useNavigation();
 
-    const goToRegister = () => {
-        navigation.navigate("Register");
+    const goBack = () => {
+        navigation.goBack();
     }
 
-    const goToForgotPassword = () => {
-        navigation.navigate("ForgotPassword");
-    }
-
-    const login = () => {
-        
+    const goToChangePassword = () => {
+        navigation.navigate('ChangePassword');
     }
 
   return (
     <SafeAreaView style={styles.container}>
-        <Image style={styles.img} source={require('../../assets/interflora.jpg')} />
+        <Pressable onPress={goBack} style={styles.backBtn}>
+            <IonIcons name="arrow-back" size={32} color='#777' />
+        </Pressable>
+        <Image style={styles.imgFloat} source={require('../../assets/interflora.jpg')} />
         <Text style={[styles.text, styles.title]} >
-            Inicia Sesión
+            ¿Olvidaste tu contraseña?
         </Text>
         <Text style={styles.text} >
-            Hola, ingresa a Interflora o {'\n'} <Pressable onPress={goToRegister}><Text style={[styles.text, styles.link]}>crea una cuenta</Text></Pressable>
+            Se enviará un código de verificación de 6 dígitos a tu correo electrónico, introducelo en la siguiente pantalla para cambiar tu contraseña.
         </Text>
+        <Image style={styles.img} source={require('../../assets/mailImg.jpg')} />
       <View style={styles.formContainer}>
           <TextInput
             style={styles.input}
             placeholder='Correo'
           />
-          <TextInput
-            style={styles.input}
-            placeholder='Contraseña'
-            secureTextEntry={true}
-          />
           <Pressable
+            onPress={goToChangePassword}
             style={styles.btn}
-            onPress={login}
           >
-              <Text style={styles.btnText} >Ingresar</Text>
+              <Text style={styles.btnText} >Enviar código</Text>
           </Pressable>
       </View>
-      <Pressable onPress={goToForgotPassword}><Text style={[styles.text, styles.link]} >Olvidé mi contraseña</Text></Pressable>
     </SafeAreaView>
   )
 }
 
-export default Login
+export default ForgotPassword
 
 const styles = StyleSheet.create({
     container: {
@@ -56,10 +51,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#fff'
     },
-    img: {
+    backBtn: {
+        backgroundColor: '#dddd',
+        borderRadius: 100,
+        width: 48,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        top: 64,
+        left: 16,
+        zIndex: 2
+    },
+    imgFloat: {
         width: '80%',
         height: 120,
         marginVertical: 24,
+        resizeMode: 'contain',
+    },
+    img: {
+        width: '80%',
+        height: 120,
         resizeMode: 'contain',
     },
     title: {
@@ -70,10 +82,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 18,
         textAlign: 'center',
-    },
-    link: {
-        color: '#0042EC',
-        textDecorationLine: "underline"
+        width: '80%',
+        marginBottom: 16
     },
     formContainer: {
         width: '100%',

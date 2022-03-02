@@ -1,53 +1,53 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable } from 'react-native';
+import IonIcons from 'react-native-vector-icons/Ionicons';
 
-const Login = () => {
+const ChangePassword = () => {
     const navigation = useNavigation();
 
-    const goToRegister = () => {
-        navigation.navigate("Register");
+    const goBack = () => {
+        navigation.goBack();
     }
-
-    const goToForgotPassword = () => {
-        navigation.navigate("ForgotPassword");
-    }
-
-    const login = () => {
-        
-    }
-
   return (
     <SafeAreaView style={styles.container}>
-        <Image style={styles.img} source={require('../../assets/interflora.jpg')} />
+        <Pressable onPress={goBack} style={styles.backBtn}>
+            <IonIcons name="arrow-back" size={32} color='#777' />
+        </Pressable>
+        <Image style={styles.imgFloat} source={require('../../assets/interflora.jpg')} />
         <Text style={[styles.text, styles.title]} >
-            Inicia Sesión
+            Cambia tu contraseña
         </Text>
         <Text style={styles.text} >
-            Hola, ingresa a Interflora o {'\n'} <Pressable onPress={goToRegister}><Text style={[styles.text, styles.link]}>crea una cuenta</Text></Pressable>
+            Introduce el código enviado al correo e introduce tu nueva contraseña
         </Text>
       <View style={styles.formContainer}>
           <TextInput
             style={styles.input}
-            placeholder='Correo'
+            placeholder='Código de verificación'
           />
           <TextInput
             style={styles.input}
-            placeholder='Contraseña'
+            placeholder='Nueva contraseña'
+            secureTextEntry={true}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder='Confirmar contraseña'
             secureTextEntry={true}
           />
           <Pressable
             style={styles.btn}
-            onPress={login}
           >
-              <Text style={styles.btnText} >Ingresar</Text>
+              <Text style={styles.btnText} >Guardar</Text>
           </Pressable>
       </View>
-      <Pressable onPress={goToForgotPassword}><Text style={[styles.text, styles.link]} >Olvidé mi contraseña</Text></Pressable>
+      <Pressable style={{width: "80%"}}><Text style={[styles.text, styles.link]} >Reenviar código a mi correo</Text></Pressable>
+
     </SafeAreaView>
   )
 }
 
-export default Login
+export default ChangePassword
 
 const styles = StyleSheet.create({
     container: {
@@ -56,29 +56,49 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: '#fff'
     },
-    img: {
+    backBtn: {
+        backgroundColor: '#dddd',
+        borderRadius: 100,
+        width: 48,
+        height: 48,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        top: 64,
+        left: 16,
+        zIndex: 2
+    },
+    imgFloat: {
         width: '80%',
         height: 120,
         marginVertical: 24,
         resizeMode: 'contain',
     },
+    img: {
+        width: '80%',
+        height: 120,
+        resizeMode: 'contain',
+    },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 12,
+        marginVertical: 12,
     },
     text: {
         fontSize: 18,
         textAlign: 'center',
+        width: '80%',
+        marginBottom: 16
     },
     link: {
         color: '#0042EC',
-        textDecorationLine: "underline"
+        textDecorationLine: "underline",
+        width: '100%'
     },
     formContainer: {
         width: '100%',
         alignItems: 'center',
-        marginVertical: 30,
+        marginBottom: 30,
         paddingHorizontal: '10%'
     },  
     input: {
