@@ -3,7 +3,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
 //Screens
-import UserMenu from '../screens/users/Menu';
+import UserMenu from '../screens/users/UserOpts.screen';
+import EditProfile from '../screens/users/EditProfile.screen';
+import ForgotPassword from "../screens/auth/ForgotPassword";
+import ChangePassword from "../screens/auth/ChangePassword";
 import AuthNavigation from "./AuthNavigation";
 
 const UserNavigation = ({isLogged}) => {
@@ -18,9 +21,23 @@ const UserNavigation = ({isLogged}) => {
             />
             <Stack.Screen 
                 name="EditProfile"
-                component={UserMenu}
+                component={EditProfile}
                 options={{
                     title: "Editar Perfil"
+                }}
+            />
+            <Stack.Screen 
+                name="SendEmail"
+                children={() => <ForgotPassword showBack={false} />}
+                options={{
+                    title: "Código de Verificación"
+                }}
+            />
+            <Stack.Screen 
+                name="ChangePassword"
+                children={() => <ChangePassword showBack={false} />}
+                options={{
+                    title: "Seguridad"
                 }}
             />
         </Stack.Navigator>

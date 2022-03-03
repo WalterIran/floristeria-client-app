@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable } from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
 
-const ChangePassword = () => {
+const ChangePassword = ({showBack}) => {
     const navigation = useNavigation();
 
     const goBack = () => {
@@ -10,9 +10,13 @@ const ChangePassword = () => {
     }
   return (
     <SafeAreaView style={styles.container}>
-        <Pressable onPress={goBack} style={styles.backBtn}>
-            <IonIcons name="arrow-back" size={32} color='#777' />
-        </Pressable>
+        {
+            showBack && (
+                <Pressable onPress={goBack} style={styles.backBtn}>
+                    <IonIcons name="arrow-back" size={32} color='#777' />
+                </Pressable>
+            )
+        }
         <Image style={styles.imgFloat} source={require('../../assets/interflora.jpg')} />
         <Text style={[styles.text, styles.title]} >
             Cambia tu contraseña
