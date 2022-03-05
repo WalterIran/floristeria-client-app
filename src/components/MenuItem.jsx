@@ -16,7 +16,7 @@ export default class MenuItem extends React.Component {
                 <Text style={styles.Text}> Flores Rojas</Text>
                 <Text style={styles.descripcion}> Rojo sobre lienzo Blanco</Text>
                 <Text style={styles.Precio}> 59.99€</Text>
-                </View>
+            </View>
      );
     }
 }
@@ -25,10 +25,16 @@ const styles = StyleSheet.create({
     menuItem: {
         width: 170,
         height: 200,
-        padding: 15,
-        margin: 10
-        
-     
+        marginVertical: 10,
+        marginHorizontal: 4,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     image: {
         width: '100%',
