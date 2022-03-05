@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 24,
-        marginVertical: 20,
+        marginVertical: 15,
     },
     formContainer: {
         width: '100%',
