@@ -7,8 +7,8 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 //Screens or navigators
 import UserNavigation from "./UserNavigation";
 import HomeScreen from '../screens/Home';
-import SearchScreen from '../screens/search/Search.screen';
-import CartScreen from '../screens/cart/Cart.screen';
+import SearchScreen from '../screens/auth/Register'; //Ruta de prueba
+import CartScreen from '../screens/bill/DeliveryDetail'; //Ruta de prueba
 import OrdersNavigation from './OrdersNavigation'
 
 const Tab = createBottomTabNavigator();
