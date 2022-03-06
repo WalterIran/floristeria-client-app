@@ -1,45 +1,161 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Pressable, ActivityIndicator, Platform, Button } from 'react-native';
+import {useState} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import useAuth from '../../hooks/useAuth';
+import Errors from '../../components/Errors';
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import { getData, storeData } from '../../utils/asyncStorage';
+
+const USER_UPT_URL = '/users/update-customer/';
 
 const EditProfile = () => {
   const navigation = useNavigation();
+  const { auth, setAuth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
+  const [loading, setLoading] = useState(false);
+  const [isPickerShow, setIsPickerShow] = useState(false);
+
+  const dateChange = (e, value) => {
+    if(Platform.OS === 'android'){
+      setIsPickerShow(false);
+    }
+    formik.setFieldValue('birthDate', value);
+  }
+  
+  const initialValues = {
+    personId: auth?.user?.personId || '',
+    userName: auth?.user?.userName || '',
+    userLastname: auth?.user?.userLastname || '',
+    birthDate: new Date(auth?.user?.birthDate) || '',
+    phoneNumber: auth?.user?.phoneNumber || '',
+    address: auth?.user?.address || '',
+  }
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: Yup.object(validationSchema()),
+    onSubmit: async (formValues) => {
+      setLoading(true);
+      try {
+        const keys = Object.keys(formValues).filter(key => formValues[key] !== '');
+        const values = {};
+        keys.forEach(key => {
+          values[key] = formValues[key]
+        });
+        
+        const response = await axiosPrivate.patch(USER_UPT_URL + auth.user.id,
+            JSON.stringify(values)
+        );
+
+        const user = response?.data?.result;
+        
+        let res = await getData();
+        const userInfo = {
+          ...res,
+          user: user
+        }
+        await storeData(userInfo);
+        res = await getData();
+        setAuth({...res});
+        alert('Perfil actualizado correctamente');
+        navigation.goBack();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false)
+      }
+    }
+  })
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardDismissMode='on-drag'>
       <Text style={styles.title}>Edita la información general de tu perfil en Interflora</Text>
-      <TextInput style={styles.input} placeholder='Identidad' maxLength={13} keyboardType='number-pad' />
-      <TextInput style={styles.input} placeholder='Nombre' />
-      <TextInput style={styles.input} placeholder='Apellido' />
+      <TextInput 
+        style={styles.input} 
+        placeholder='Identidad'
+        maxLength={13} 
+        keyboardType='number-pad'
+        value={formik.values.personId}
+        onChangeText={(text) => formik.setFieldValue('personId', text)}
+      />
+      <TextInput 
+        style={styles.input}
+        placeholder='Nombre'
+        value={formik.values.userName}
+        onChangeText={(text) => formik.setFieldValue('userName', text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder='Apellido'
+        value={formik.values.userLastname}
+        onChangeText={(text) => formik.setFieldValue('userLastname', text)}
+      />
       <View style={{width: '100%', borderWidth: 1, borderColor: '#ababab', borderRadius: 16, padding: 16, marginBottom: 24}}>
         <Text style={{fontSize: 24, color: '#ababab'}}>Fecha de nacimiento</Text>
-        <DateTimePicker
-            testID="birthDate"
-            style={{width: '100%'}}
-            value={new Date()}
-            mode="date"
-            display="spinner"
-            maximumDate={new Date()}
-            minimumDate={new Date(1930, 0, 1)}
-        />
+        {
+          (!isPickerShow && Platform.OS === 'android') && (
+            <Button title='Seleccionar fecha' color='#BFA658' onPress={() => setIsPickerShow(true)}/>
+          )
+        }
+
+        {
+          (isPickerShow || Platform.OS === 'ios') && (
+            <DateTimePicker
+                testID="birthDate"
+                value={formik.values.birthDate}
+                style={{width: '100%'}}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                maximumDate={Date.parse(new Date())}
+                minimumDate={Date.parse(new Date(1930, 0, 1))}
+                timeZoneOffsetInMinutes={60}
+                onChange={dateChange}
+              />
+          )
+        }
       </View>
-      <TextInput style={styles.input} placeholder='Teléfono' maxLength={8} keyboardType='phone-pad' />
-      <TextInput style={[styles.input, styles.multiline]} placeholder='Dirección' multiline />
+      <TextInput
+        style={styles.input}  
+        placeholder='Teléfono' 
+        maxLength={8} 
+        keyboardType='phone-pad'
+        value={formik.values.phoneNumber}
+        onChangeText={(text) => formik.setFieldValue('phoneNumber', text)}
+      />
+      <TextInput
+        style={[styles.input, styles.multiline]} 
+        placeholder='Dirección' 
+        multiline 
+        value={formik.values.address}
+        onChangeText={(text) => formik.setFieldValue('address', text)}
+      />
+      <Errors errors={formik.errors} title='Errores de campos' />
       <Pressable
         style={styles.btn}
-        onPress={() => navigation.goBack()}
+        onPress={formik.handleSubmit}
       >
           <Text style={styles.btnText} >Actualizar Información</Text>
+          {loading && <ActivityIndicator size='small' color="#fff"/>}
       </Pressable>
     </ScrollView>
   )
 }
 
-export default EditProfile
+export default EditProfile;
+
+function validationSchema () {
+  return {
+    personId: Yup.string().length(13).matches(/^[0-9]+$/, 'Identidad inválida'),
+    userName: Yup.string().required("Campo requerido"),
+    userLastname: Yup.string().required("Campo requerido"),
+    birthDate: Yup.string(),
+    phoneNumber: Yup.string().length(8).matches(/^[0-9]+$/, 'Teléfono inválido'),
+    address: Yup.string(),
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
