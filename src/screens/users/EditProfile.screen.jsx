@@ -1,9 +1,13 @@
 import { StyleSheet, Text, View, ScrollView, TextInput, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
 const EditProfile = () => {
   const navigation = useNavigation();
+  const axiosPrivate = useAxiosPrivate();
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardDismissMode='on-drag'>

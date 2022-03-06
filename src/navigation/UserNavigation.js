@@ -8,38 +8,57 @@ import EditProfile from '../screens/users/EditProfile.screen';
 import ForgotPassword from "../screens/auth/ForgotPassword";
 import ChangePassword from "../screens/auth/ChangePassword";
 import AuthNavigation from "./AuthNavigation";
+import useAuth from "../hooks/useAuth";
 
-const UserNavigation = ({isLogged}) => {
+const UserNavigation = () => {
+    const { auth } = useAuth();
     return(
         <Stack.Navigator initialRouteName="UserMenu">
-            <Stack.Screen 
-                name="UserMenu"
-                component={UserMenu}
-                options={{
-                    title: "Mi Cuenta"
-                }}
-            />
-            <Stack.Screen 
-                name="EditProfile"
-                component={EditProfile}
-                options={{
-                    title: "Editar Perfil"
-                }}
-            />
-            <Stack.Screen 
-                name="SendEmail"
-                children={() => <ForgotPassword showBack={false} />}
-                options={{
-                    title: "Código de Verificación"
-                }}
-            />
-            <Stack.Screen 
-                name="ChangePassword"
-                children={() => <ChangePassword showBack={false} />}
-                options={{
-                    title: "Seguridad"
-                }}
-            />
+            {
+                auth !== null && auth !== undefined && Object.keys(auth).length !== 0? 
+                (
+                    <>
+                    <Stack.Screen 
+                        name="UserMenu"
+                        component={UserMenu}
+                        options={{
+                            title: "Mi Cuenta"
+                        }}
+                    />
+                    <Stack.Screen 
+                        name="EditProfile"
+                        component={EditProfile}
+                        options={{
+                            title: "Editar Perfil"
+                        }}
+                    />
+                    <Stack.Screen 
+                        name="SendEmail"
+                        component={ForgotPassword}
+                        options={{
+                            title: "Código de Verificación"
+                        }}
+                    />
+                    <Stack.Screen 
+                        name="ChangePassword"
+                        component={ChangePassword}
+                        options={{
+                            title: "Seguridad"
+                        }}
+                    />
+                    </>
+                ) : (
+                    <>
+                    <Stack.Screen 
+                        name="LoginStack"
+                        component={AuthNavigation}
+                        options={{
+                            headerShown: false
+                        }}
+                    />
+                    </>
+                )
+            }
         </Stack.Navigator>
     );
 }

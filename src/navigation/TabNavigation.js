@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,12 +9,23 @@ import UserNavigation from "./UserNavigation";
 import HomeScreen from '../screens/Home';
 import SearchScreen from '../screens/search/Search.screen';
 import CartScreen from '../screens/cart/Cart.screen';
-import OrdersNavigation from './OrdersNavigation'
+import OrdersNavigation from './OrdersNavigation';
+
+//Auth
+import { getData, storeData } from '../utils/asyncStorage';
+import useAuth from "../hooks/useAuth";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
+    const { setAuth, auth } = useAuth();
     const [isLogged, setIsLogged] = useState(true);
+
+    useEffect(async () => {
+        const res = await getData();
+        setAuth({...res});
+    }, [])
+    
 
     return (
         <Tab.Navigator initialRouteName="Home" screenOptions={{

@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, Pressable, ScrollView, SafeAreaView } from 'react-native';
+import { removeValue } from '../../utils/asyncStorage';
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import useAuth from '../../hooks/useAuth';
 
 const btns = [
   {
@@ -25,9 +27,15 @@ const btns = [
 
 const UserOpts = () => {
   const navigation = useNavigation();
+  const { auth, setAuth } = useAuth();
 
   const navigateTo = (screen) => {
     navigation.navigate(screen);
+  }
+
+  const logout = () => {
+    removeValue();
+    setAuth(null);
   }
 
   return (
@@ -35,6 +43,7 @@ const UserOpts = () => {
       <View style={[styles.iconBox, styles.shadow, styles.mainIcon]}>
         <MCIcon name='account' size={150} color={"#333"} />
       </View>
+      <Text style={{fontSize: 18, fontWeight: 'bold'}}>Bienvenido {auth?.user?.userName || ''}</Text>
       {
         btns.map((item, index) => {
           return(
@@ -53,7 +62,7 @@ const UserOpts = () => {
         })
       }
 
-      <Pressable style={styles.logoutBtn}>
+      <Pressable style={styles.logoutBtn} onPress={logout}>
         <Text style={styles.logoutBtnText}>Cerrar Sesión</Text>
       </Pressable>
     </ScrollView>
