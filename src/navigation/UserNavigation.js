@@ -36,14 +36,14 @@ const UserNavigation = () => {
                         name="SendEmail"
                         component={ForgotPassword}
                         options={{
-                            title: "Código de Verificación"
+                            headerShown: false
                         }}
                     />
                     <Stack.Screen 
                         name="ChangePassword"
                         component={ChangePassword}
                         options={{
-                            title: "Seguridad"
+                            headerShown: false
                         }}
                     />
                     </>

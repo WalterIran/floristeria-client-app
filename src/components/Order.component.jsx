@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native'
-import React from 'react'
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 const Order = ({orderId, paymentDate = new Date(), deliveryDate = new Date(), goTo}) => {
   return (

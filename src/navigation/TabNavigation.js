@@ -25,17 +25,19 @@ const TabNavigation = () => {
     useEffect(async () => {
         try {
             let res = await getData();
-            const response = await axios.post(REFRESH_URL + res.user.id,
-                JSON.stringify({refreshToken: res.refreshToken}),
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                    withCredentials: true
-                }
-            );
-            const user = response?.data;
-            await storeData(user);
-            res = await getData();
-            setAuth({...res});
+            if(res !== null){
+                const response = await axios.post(REFRESH_URL + res?.user?.id,
+                    JSON.stringify({refreshToken: res.refreshToken}),
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials: true
+                    }
+                );
+                const user = response?.data;
+                await storeData(user);
+                res = await getData();
+                setAuth({...res});
+            }
         } catch (error) {
             alert(error)
         }

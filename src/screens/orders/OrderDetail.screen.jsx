@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Pressable } from 'react-native'
-import AntIcon from 'react-native-vector-icons/AntDesign';
+import "intl";
+import "intl/locale-data/jsonp/en";
 import Status from '../../components/Status.component';
 import Detail from '../../components/OrderDetail.component';
 
