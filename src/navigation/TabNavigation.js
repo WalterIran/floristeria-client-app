@@ -14,16 +14,31 @@ import OrdersNavigation from './OrdersNavigation';
 //Auth
 import { getData, storeData } from '../utils/asyncStorage';
 import useAuth from "../hooks/useAuth";
+import axios from "../api/axios";
+const REFRESH_URL = '/auth/mobile/refresh-token/';
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
     const { setAuth, auth } = useAuth();
-    const [isLogged, setIsLogged] = useState(true);
 
     useEffect(async () => {
-        const res = await getData();
-        setAuth({...res});
+        try {
+            let res = await getData();
+            const response = await axios.post(REFRESH_URL + res.user.id,
+                JSON.stringify({refreshToken: res.refreshToken}),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            const user = response?.data;
+            await storeData(user);
+            res = await getData();
+            setAuth({...res});
+        } catch (error) {
+            alert(error)
+        }
     }, [])
     
 
@@ -41,7 +56,7 @@ const TabNavigation = () => {
         }}>
             <Tab.Screen 
                 name="User" 
-                children={() => <UserNavigation isLogged={isLogged} />} 
+                component={UserNavigation}
                 options={{
                     headerShown: false,
                     tabBarLabel: "Mi cuenta",

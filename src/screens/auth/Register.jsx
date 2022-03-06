@@ -9,6 +9,7 @@ import Errors from '../../components/Errors';
 //AXIOS
 import axios from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
+import { getData, storeData } from '../../utils/asyncStorage';
 const REGISTER_URL = '/users/register-customer'
 
 const Register = () => {
