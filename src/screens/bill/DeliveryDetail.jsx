@@ -9,6 +9,7 @@ const DeliveryDetail = () => {
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const navigation = useNavigation();
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -24,6 +25,10 @@ const DeliveryDetail = () => {
     const showDatepicker = () => {
         showMode('date');
     };
+
+    const goToPayment = () => {
+        navigation.navigate("ConfirmPurchase");
+    }
 
     return(
         <SafeAreaView style={styles.container}>
@@ -128,6 +133,7 @@ const DeliveryDetail = () => {
                     </View>
                     <Pressable
                         style={styles.btn}
+                        onPress={goToPayment}
                     >
                         <Text style={styles.btnText} >Continuar</Text>
                     </Pressable>
