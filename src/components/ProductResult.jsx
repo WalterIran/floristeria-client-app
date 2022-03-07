@@ -5,7 +5,7 @@ const ProductResult = ({img, title, desc, price}) => {
   return (
     <View style={styles.productContainer}>
         <View style={styles.imgContainer}>
-            <Image source={img} style={styles.img} />
+            <Image source={{uri: img}} style={styles.img} />
         </View>
         <View style={styles.descContainer}>
             <Text style={styles.title}>{title}</Text>

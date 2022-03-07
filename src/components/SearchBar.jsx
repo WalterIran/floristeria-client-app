@@ -1,12 +1,25 @@
 import { StyleSheet, Text, View, SafeAreaView, TextInput } from 'react-native';
 import IonIcons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import axios from '../api/axios';
 
-const SearchBar = () => {
-    const navigation = useNavigation();
+const SearchBar = ({setProducts, setLoading}) => {
 
-    const handleSearch = () => {
-        navigation.navigate('SearchResults')
+    const handleSearch = async (e) => {
+        const value = e.nativeEvent.text;
+        if(value === '') return;
+        setLoading(true);
+        try {
+            const response = await axios.get('/search/products',
+                { params: {search: value}}
+            );
+            const products = response.data.products;
+            setProducts(products);
+        } catch {
+            console.error(error);
+            alert('Algo salió prueba luego...');
+        } finally {
+            setLoading(false);
+        }
     }
 
   return (
@@ -16,6 +29,7 @@ const SearchBar = () => {
             style={styles.input}
             placeholder='Ingrese su búsqueda...'
             onSubmitEditing={handleSearch}
+            clearButtonMode='always'
         />
     </View>
   )
