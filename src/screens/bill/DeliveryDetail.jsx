@@ -9,6 +9,9 @@ const DeliveryDetail = () => {
     const [date, setDate] = useState(new Date());
     const [mode, setMode] = useState('date');
     const [show, setShow] = useState(false);
+    const [nombre, setNombre] = useState(null);
+    const [apellido, setApellido] = useState(null);
+    const [telefono, setTelefono] = useState(null);
     const navigation = useNavigation();
 
     const onChange = (event, selectedDate) => {
@@ -28,6 +31,11 @@ const DeliveryDetail = () => {
 
     const goToPayment = () => {
         navigation.navigate("ConfirmPurchase");
+    }
+
+    //Codigo de prueba
+    const mostart = () => {
+        console.log(selectedCity);
     }
 
     return(
@@ -133,7 +141,7 @@ const DeliveryDetail = () => {
                     </View>
                     <Pressable
                         style={styles.btn}
-                        onPress={goToPayment}
+                        onPress={mostart}
                     >
                         <Text style={styles.btnText} >Continuar</Text>
                     </Pressable>

@@ -8,11 +8,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import UserNavigation from "./UserNavigation";
 import HomeScreen from '../screens/Home';
 import SearchScreen from '../screens/search/Search.screen';
-<<<<<<< HEAD
-import CartScreen from '../screens/bill/DeliveryDetail'; //Ruta de prueba
-import OrdersNavigation from './OrdersNavigation'
-=======
-import CartScreen from '../screens/cart/Cart.screen';
+import CartScreen from '../screens/bill/DeliveryDetail';
 import OrdersNavigation from './OrdersNavigation';
 
 //Auth
@@ -20,7 +16,6 @@ import { getData, storeData } from '../utils/asyncStorage';
 import useAuth from "../hooks/useAuth";
 import axios from "../api/axios";
 const REFRESH_URL = '/auth/mobile/refresh-token/';
->>>>>>> a0452db596aaff09639a088da7b359d2fe8bfc76
 
 const Tab = createBottomTabNavigator();
 
