@@ -13,7 +13,7 @@ const Register = () => {
   return (
     <SafeAreaView style={styles.container}>
         <Pressable onPress={goBack} style={styles.backBtn}>
-            <IonIcons name="arrow-back" size={32} color='#777' />
+            <IonIcons name="arrow-left" size={32} color='#777' />
         </Pressable>
         <Image style={styles.img} source={require('../../assets/interflora.jpg')} />
         <Text style={styles.title} >
