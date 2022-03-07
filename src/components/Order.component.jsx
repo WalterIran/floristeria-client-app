@@ -2,15 +2,16 @@ import { StyleSheet, Text, View, Pressable } from 'react-native'
 import "intl";
 import "intl/locale-data/jsonp/en";
 
-const Order = ({orderId, paymentDate = new Date(), deliveryDate = new Date(), goTo}) => {
+const Order = ({billId, createdAt = new Date(), deliveryDate = new Date(), goTo}) => {
+  
   return (
     <View style={[styles.container, styles.shadow]}>
-      <Text style={styles.title}>Pedido: #{`${orderId}`.padStart(5,0)}</Text>
-      <Text style={styles.dates}>Fecha de pago: {new Intl.DateTimeFormat('es-HN', {dateStyle: 'medium', timeStyle: 'short'}).format(new Date(paymentDate))}</Text>
+      <Text style={styles.title}>Pedido: #{`${billId}`.padStart(5,0)}</Text>
+      <Text style={styles.dates}>Fecha de pago: {new Intl.DateTimeFormat('es-HN', {dateStyle: 'medium', timeStyle: 'short'}).format(new Date(createdAt))}</Text>
       <Text style={styles.dates}>Fecha de entrega: {new Intl.DateTimeFormat('es-HN', {dateStyle: 'medium', timeStyle: 'short'}).format(new Date(deliveryDate))}</Text>
       <Pressable
         style={[styles.btn, styles.shadow]}
-        onPress={goTo}
+        onPress={() => goTo(billId)}
       >
           <Text style={styles.btnText}>Detalles</Text>
       </Pressable>

@@ -7,7 +7,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 //Screens or navigators
 import UserNavigation from "./UserNavigation";
 import HomeScreen from '../screens/Home';
-import SearchScreen from '../screens/search/Search.screen';
+import SearchNavigation from './SearchNavigation';
 import CartScreen from '../screens/cart/Cart.screen';
 import OrdersNavigation from './OrdersNavigation';
 
@@ -82,7 +82,7 @@ const TabNavigation = () => {
                 name="Home" 
                 component={HomeScreen} 
                 options={{
-                    headerTitle: "Inicio",
+                    headerShown: false,
                     tabBarLabel: "",
                     tabBarIcon: ({color, size}) => (
                         <View style={styles.homeButton}>
@@ -93,10 +93,9 @@ const TabNavigation = () => {
             
             <Tab.Screen 
                 name="Search" 
-                component={SearchScreen} 
+                component={SearchNavigation} 
                 options={{
-                    headerTitle: "Búsqueda",
-                    tabBarLabel: "Búsqueda",
+                    headerShown: false,
                     tabBarIcon: ({color, size}) => (
                     <IonIcons name="search-outline" color={'#BFA658'} size={size} />
                 )

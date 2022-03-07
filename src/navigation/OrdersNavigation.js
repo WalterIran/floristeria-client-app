@@ -7,6 +7,8 @@ const Stack = createNativeStackNavigator();
 import PendingOrdersScreen from "../screens/orders/PendingOrders.screen";
 import CompleteOrdersScreen from "../screens/orders/CompleteOrders.screen";
 import OrderDetail from "../screens/orders/OrderDetail.screen";
+import AuthNavigation from "./AuthNavigation";
+import useAuth from "../hooks/useAuth";
 
 const TopBarNavigation = () => {
     return(
@@ -47,23 +49,41 @@ const TopBarNavigation = () => {
 }
 
 const OrdersNavigation = () => {
+    const { auth } = useAuth();
+
     return (
         <Stack.Navigator initialRouteName="Orders">
-            <Stack.Screen 
-                name="Orders"
-                component={TopBarNavigation}
-                options={{
-                    title: 'Mis Pedidos',
-                    headerShadowVisible: false
-                }}
-            />
-            <Stack.Screen 
-                name="OrderDetail"
-                component={OrderDetail}
-                options={{
-                    title: "Detalle del Pedido"
-                }}
-            />
+            {
+                auth !== null && auth !== undefined && Object.keys(auth).length !== 0? (
+                    <>
+                    <Stack.Screen 
+                        name="Orders"
+                        component={TopBarNavigation}
+                        options={{
+                            title: 'Mis Pedidos',
+                            headerShadowVisible: false
+                        }}
+                    />
+                    <Stack.Screen 
+                        name="OrderDetail"
+                        component={OrderDetail}
+                        options={{
+                            title: "Detalle del Pedido"
+                        }}
+                    />
+                    </>
+                ) : (
+                    <>
+                    <Stack.Screen 
+                        name="LoginStack"
+                        component={AuthNavigation}
+                        options={{
+                            headerShown: false
+                        }}
+                    />
+                    </>
+                )
+            }
         </Stack.Navigator>
     );
 }
