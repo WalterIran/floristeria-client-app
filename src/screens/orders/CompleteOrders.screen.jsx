@@ -1,29 +1,66 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import React from 'react'
+import { StyleSheet, ActivityIndicator, SafeAreaView, Platform, FlatList } from 'react-native'
+import { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+
+//Components
 import Order from '../../components/Order.component';
+
+//API
+import useAuth from '../../hooks/useAuth';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+const LIMIT = 5;
+let PAGE = 1;
 
 const Orders = () => {
   const navigation = useNavigation();
+  const axiosPrivate = useAxiosPrivate();
+  const { auth } = useAuth();
+  const [orders, setOrders] = useState(null);
 
-  const goToOrderDetail = () => {
-    navigation.navigate('OrderDetail');
+  const goToOrderDetail = (billId) => {
+    navigation.navigate('OrderDetail', {billId});
   }
 
+  useEffect(() => {
+    ( async () => {
+      await loadOrders();
+    })();
+  }, []);
+
+  const loadOrders = async () => {
+    try {
+      const response = await axiosPrivate.get(`orders/byuser/${auth.user.id}/confirmed?limit=${LIMIT}&page=${PAGE}`);
+      setOrders(response.data.orders);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Order orderId={5} goTo={goToOrderDetail}/>
-      <Order orderId={6} goTo={goToOrderDetail}/>
-    </ScrollView>
+    <SafeAreaView>
+      {
+        orders ? (
+          <FlatList 
+            data={orders}
+            numColumns={1}
+            keyExtractor={(order, index) => String(order.billId)}
+            renderItem={({item}) => <Order {...item} goTo={goToOrderDetail} />}
+            contentContainerStyle={styles.flatListContentContainer}
+          />
+        ) : (
+          <ActivityIndicator />
+        )
+      }
+    </SafeAreaView>
   )
 }
 
 export default Orders;
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    paddingVertical: 32,
-    paddingHorizontal: 16,
+  flatListContentContainer: {
+      paddingHorizontal: 5,
+      marginTop: Platform.OS === 'android' ? 30 : 0,
   },
 });
