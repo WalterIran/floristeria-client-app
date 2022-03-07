@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View ,Image,Pressable, ScrollView, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View ,Image,Pressable, ScrollView, Button, ActivityIndicator} from 'react-native'
 import React from 'react';
 import {useState, useEffect} from 'react';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -9,7 +9,7 @@ import useAuth from '../../hooks/useAuth';
 
 const Cart = () => {
   const { auth } = useAuth();
-  const [datos,useData] = useState([]);
+  const [datos,useData] = useState(null);
   const navigation = useNavigation();
 
   const goToDelivery = () => {
@@ -72,42 +72,49 @@ const Cart = () => {
   
   return (
     <ScrollView>
-      <SafeAreaView style={styles.mainContainer}>
-        {datos.length === 0 && <Text>Carrito Vacío</Text>}
       {
-        datos.map((product,index)=>{
-            return (
-              <View key={index} style={styles.productContainer}>
-              <View style={styles.productImageContainer}>
-                <Image 
-                  source={{uri:product.product.productImgUrl}}
-                  style={styles.img}
-                />
-              </View>
-              <View style={styles.productInformationContainer}>
-                <Text style={styles.title}>{product.product.productName}</Text>
-                <Text style={styles.textPrice}>{product.price}</Text>
-                <View style={styles.information}>
-                    <Pressable onPress={()=>decrementQuantity(product.productId)}>
-                      <EvilIcons name="arrow-left" style={styles.button}></EvilIcons>
-                    </Pressable>
-                    <Text style={styles.textQuantity}>{product.quantity}</Text>  
-                    <Pressable onPress={()=>incrementQuantity(product.productId)}>
-                      <EvilIcons name="arrow-right" style={styles.button}></EvilIcons>
-                    </Pressable>
-                    <Pressable  onPress={()=>cancelledProduct(product.productId)}>
-                      <EvilIcons name="trash" style={styles.trashButton}></EvilIcons>
-                    </Pressable>
-                    </View>
+        datos !== null ? (
+          <SafeAreaView style={styles.mainContainer}>
+            <Button title='Refrescar' onPress={getProducts} />
+            {datos.length === 0 && <Text>Carrito Vacío</Text>}
+          {
+            datos.map((product,index)=>{
+                return (
+                  <View key={index} style={styles.productContainer}>
+                  <View style={styles.productImageContainer}>
+                    <Image 
+                      source={{uri:product.product.productImgUrl}}
+                      style={styles.img}
+                    />
                   </View>
-              </View>  
-            );
-        })
-      } 
-      <Pressable style={styles.continueBottun} onPress={goToDelivery}>
-        <Text style={styles.continueBottunText}>Continuar</Text>
-      </Pressable>
-      </SafeAreaView>
+                  <View style={styles.productInformationContainer}>
+                    <Text style={styles.title}>{product.product.productName}</Text>
+                    <Text style={styles.textPrice}>$ {product.price}</Text>
+                    <View style={styles.information}>
+                        <Pressable onPress={()=>decrementQuantity(product.productId)}>
+                          <EvilIcons name="arrow-left" style={styles.button}></EvilIcons>
+                        </Pressable>
+                        <Text style={styles.textQuantity}>{product.quantity}</Text>  
+                        <Pressable onPress={()=>incrementQuantity(product.productId)}>
+                          <EvilIcons name="arrow-right" style={styles.button}></EvilIcons>
+                        </Pressable>
+                        <Pressable  onPress={()=>cancelledProduct(product.productId)}>
+                          <EvilIcons name="trash" style={styles.trashButton}></EvilIcons>
+                        </Pressable>
+                        </View>
+                      </View>
+                  </View>  
+                );
+            })
+          } 
+          <Pressable style={styles.continueBottun} onPress={goToDelivery}>
+            <Text style={styles.continueBottunText}>Continuar</Text>
+          </Pressable>
+          </SafeAreaView>
+        ) : (
+          <ActivityIndicator />
+        )
+      }
     </ScrollView>
   )
 }

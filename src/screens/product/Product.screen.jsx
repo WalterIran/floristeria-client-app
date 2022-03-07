@@ -1,52 +1,77 @@
 
-import { StyleSheet, Text, View ,Image,Pressable, ScrollView, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View ,Image,Pressable, ScrollView, ActivityIndicator} from 'react-native'
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import {useState, useEffect} from 'react';
-import axios from 'axios';
+import axios from '../../api/axios';
+import useAuth from '../../hooks/useAuth';
 
 
 const Product = ({route}) => {
-  const [datos,useData] = useState([]);
+  const [datos,useData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { productId } = route?.params;
+  const {auth} = useAuth();
   
   const getProduct = () => {
-    axios.get(`http://192.168.1.10:5000/api/v1/products/byid/${productId}`)
+    axios.get(`/products/byid/${productId}`)
      .then(function (response){
         useData(response.data.product);
-        console.log(response.data.product);
      })
      .catch(function (error){
        alert(error);
        console.error(error)
      });
   }
+
+  const addToCart = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/shopping-cart/find-user-cart/${auth.user.id}`);
+      const cartId = response.data.cartId;
+      const response2 = await axios.post(`/shopping-cart/${cartId}/product/${productId}/new`);
+      alert('Producto agregado al carrito');
+    } catch (error) {
+      alert('Algo Salió mal');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     getProduct()
   }, []);
   
   return (
     <ScrollView>
-      <SafeAreaView style={styles.mainContainer}>
+      {
+        datos !== null ? (
 
-              <View style={styles.headerContainer}>
-                <Text style={styles.title}>{datos.productName}</Text>
-                <Text style={styles.price}>{datos.price}</Text>
-              </View>
-              <View style={styles.imgContainer}>
-                  <Image style={styles.img}
-                    source={{ uri: datos.productImgUrl}} />
-                </View><View style={styles.infoContainer}>
-                  <Text style={styles.textTitle}>{datos.productDescriptionTitle}</Text>
-                  <Text style={styles.textDescription}>{datos.productDescription}</Text>
+        <SafeAreaView style={styles.mainContainer}>
+
+                <View style={styles.headerContainer}>
+                  <Text style={styles.title}>{datos.productName}</Text>
+                  <Text style={styles.price}>{datos.price}</Text>
                 </View>
+                <View style={styles.imgContainer}>
+                    <Image style={styles.img}
+                      source={{ uri: datos.productImgUrl}} />
+                  </View><View style={styles.infoContainer}>
+                    <Text style={styles.textTitle}>{datos.productDescriptionTitle}</Text>
+                    <Text style={styles.textDescription}>{datos.productDescription}</Text>
+                  </View>
 
-   
-        <Pressable style={styles.continueBottun}>
-              <Text style={styles.continueBottunText}>Continuar</Text>
-        </Pressable>
-      </SafeAreaView>
+    
+          <Pressable style={styles.continueBottun} onPress={addToCart}>
+                <Text style={styles.continueBottunText}>Agregar a carrito</Text>
+                {loading && <ActivityIndicator />}
+          </Pressable>
+        </SafeAreaView>
+        ) : (
+          <ActivityIndicator />
+        )
+      }
     </ScrollView>
   )
 }
@@ -57,8 +82,7 @@ const styles = StyleSheet.create({
   mainContainer:{
     width:'100%',
     height:'100%',
-    marginTop: -30,
-    padding: 0,
+    paddingHorizontal: 10,
     flexDirection:'column'
   },
   headerContainer:{
