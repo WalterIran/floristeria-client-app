@@ -22,7 +22,6 @@ const Register = () => {
         navigation.goBack();
     }
 
-<<<<<<< HEAD
     const formik = useFormik({
         initialValues: initialValues,
         validationSchema: Yup.object(validationSchema()),
@@ -52,27 +51,6 @@ const Register = () => {
             }
         }
     });
-=======
-  return (
-    <SafeAreaView style={styles.container}>
-        <Pressable onPress={goBack} style={styles.backBtn}>
-            <IonIcons name="arrow-left" size={32} color='#777' />
-        </Pressable>
-        <Image style={styles.img} source={require('../../assets/interflora.jpg')} />
-        <Text style={styles.title} >
-            Crea una cuenta
-        </Text>
-      <View style={styles.formContainer}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between',width: '100%'}}>
-            <TextInput
-                style={[styles.input, {flex: 1, marginRight: 6}]}
-                placeholder='Nombre'
-            />
-            <TextInput
-                style={[styles.input, {flex: 1}]}
-                placeholder='Apellido'
-            />
->>>>>>> origin/cart
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

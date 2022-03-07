@@ -7,20 +7,23 @@ import {useState, useEffect} from 'react';
 import axios from 'axios';
 
 
-const Product = () => {
+const Product = ({route}) => {
   const [datos,useData] = useState([]);
+  const { productId } = route?.params;
   
-  const getProducts = () => {
-    axios.get('http://192.168.1.11:5000/api/v1/products/byid/1')
+  const getProduct = () => {
+    axios.get(`http://192.168.1.10:5000/api/v1/products/byid/${productId}`)
      .then(function (response){
         useData(response.data.product);
+        console.log(response.data.product);
      })
      .catch(function (error){
        alert(error);
+       console.error(error)
      });
   }
   useEffect(() => {
-    getProducts()
+    getProduct()
   }, []);
   
   return (

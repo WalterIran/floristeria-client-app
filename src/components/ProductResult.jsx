@@ -1,18 +1,26 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 
-const ProductResult = ({img, title, desc, price}) => {
+const ProductResult = ({img, title, desc, price, productId}) => {
+    const navigation = useNavigation();
+
+    const goTo = (id) => {
+        navigation.navigate('ProductScreen', {productId})
+    }   
   return (
-    <View style={styles.productContainer}>
-        <View style={styles.imgContainer}>
-            <Image source={{uri: img}} style={styles.img} />
+      <TouchableOpacity style={{width: '100%'}} onPress={() => goTo(productId)}>
+        <View style={styles.productContainer}>
+            <View style={styles.imgContainer}>
+                <Image source={{uri: img}} style={styles.img} />
+            </View>
+            <View style={styles.descContainer}>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.desc}>{desc}</Text>
+                <Text style={styles.price}>{price} $</Text>
+            </View>
         </View>
-        <View style={styles.descContainer}>
-            <Text style={styles.title}>{title}</Text>
-            <Text style={styles.desc}>{desc}</Text>
-            <Text style={styles.price}>{price} $</Text>
-        </View>
-    </View>
+      </TouchableOpacity>
   )
 }
 

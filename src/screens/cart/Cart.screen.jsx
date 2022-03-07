@@ -4,29 +4,31 @@ import {useState, useEffect} from 'react';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import axios from '../../api/axios';
+import useAuth from '../../hooks/useAuth';
 
 const Cart = () => {
-
+  const { auth } = useAuth();
+  const [datos,useData] = useState([]);
   const navigation = useNavigation();
 
   const goToDelivery = () => {
       navigation.navigate('Delivery');
   }
   
-  const [datos,useData] = useState([]);
-  const getProducts = () => {
-    axios.get('http://192.168.1.11:5000/api/v1/shopping-cart/1/find-user-cart-details')
+  const getProducts = async () => {
+    const response = await axios.get(`shopping-cart/find-user-cart/${auth.user.id}`);
+    axios.get(`/shopping-cart/${auth.user.id}/find-user-cart-details`)
      .then(function (response){
         useData(response.data);
      })
      .catch(function (error){
-       alert(error);
+       console.error(error);
      });
   }
   
    const incrementQuantity = (id) =>{
-    axios.put(`http://192.168.1.11:5000/api/v1/shopping-cart/23/product/${id}/add`)
+    axios.put(`/shopping-cart/${datos[0].cartId}/product/${id}/add`)
     .then(function (response){
       //1)filtrar dentro de useData el objeto que contenga el productId == productId,  2) incrementar el objeto + 1, 3)volver introducir los datos a useData volver introducir los datos a useData 
       /*
@@ -46,7 +48,7 @@ const Cart = () => {
   }
 
   const decrementQuantity = (id) =>{
-    axios.put(`http://192.168.1.11:5000/api/v1/shopping-cart/23/product/${id}/subtract`)
+    axios.put(`/shopping-cart/${datos[0].cartId}/product/${id}/subtract`)
     .then(function (response){
       getProducts();    
     })
@@ -56,7 +58,7 @@ const Cart = () => {
   }
 
   const cancelledProduct = (id) =>{
-    axios.delete(`http://192.168.1.11:5000/api/v1/shopping-cart/23/product/${id}/cancel`)
+    axios.delete(`/shopping-cart/${datos[0].cartId}/product/${id}/cancel`)
     .then(function (response){
       getProducts();    
     })
@@ -71,18 +73,19 @@ const Cart = () => {
   return (
     <ScrollView>
       <SafeAreaView style={styles.mainContainer}>
+        {datos.length === 0 && <Text>Carrito Vacío</Text>}
       {
         datos.map((product,index)=>{
             return (
               <View key={index} style={styles.productContainer}>
               <View style={styles.productImageContainer}>
                 <Image 
-                  source={{uri:product.product.image}}
+                  source={{uri:product.product.productImgUrl}}
                   style={styles.img}
                 />
               </View>
               <View style={styles.productInformationContainer}>
-                <Text style={styles.title}>{product.product.name}</Text>
+                <Text style={styles.title}>{product.product.productName}</Text>
                 <Text style={styles.textPrice}>{product.price}</Text>
                 <View style={styles.information}>
                     <Pressable onPress={()=>decrementQuantity(product.productId)}>

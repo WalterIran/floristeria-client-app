@@ -8,7 +8,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import UserNavigation from "./UserNavigation";
 import HomeScreen from '../screens/Home';
 import SearchNavigation from './SearchNavigation';
-import CartScreen from '../screens/cart/Cart.screen';
+import PaymentNavigation from './PaymentNavigation';
 import OrdersNavigation from './OrdersNavigation';
 
 //Auth
@@ -68,10 +68,10 @@ const TabNavigation = () => {
             }} />
 
             <Tab.Screen 
-                name="Cart" 
-                component={CartScreen} 
+                name="Payment" 
+                component={PaymentNavigation} 
                 options={{
-                    headerTitle: "Carrito",
+                    headerShown: false,
                     tabBarLabel: "Carrito",
                     tabBarIcon: ({color, size}) => (
                     <MCIcon name="shopping-outline" color={'#BFA658'} size={size} />
