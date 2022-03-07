@@ -1,8 +1,53 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, TextInput, Pressable, ActivityIndicator } from 'react-native';
+import {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import useAuth from '../../hooks/useAuth';
+import { getData, storeData } from '../../utils/asyncStorage';
+
+//Components
+import Errors from '../../components/Errors';
+
+//AXIOS
+import axios from '../../api/axios';
+const LOGIN_URL = '/auth/mobile/login'
 
 const Login = () => {
     const navigation = useNavigation();
+    const { setAuth, auth } = useAuth();
+    const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
+
+    const formik = useFormik({
+        initialValues: { email: "", password: ""},
+        validationSchema: Yup.object(validationSchema()),
+        onSubmit: async (formValue) => {
+            setLoading(true);
+            try {
+                const response = await axios.post(LOGIN_URL,
+                    JSON.stringify(formValue),
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials: true
+                    }
+                );
+                const user = response?.data;
+                await storeData(user);
+                const res = await getData();
+                setAuth({...res});
+            } catch (error) {
+                if(!error?.response) {
+                    setErrors({Servidor: 'Error en el servidor'})
+                }else if(error.response?.status === 401) {
+                    setErrors({Inautorizado: 'Correo o contraseña incorrecta'});
+                }
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    });
 
     const goToRegister = () => {
         navigation.navigate("Register");
@@ -10,10 +55,6 @@ const Login = () => {
 
     const goToForgotPassword = () => {
         navigation.navigate("ForgotPassword");
-    }
-
-    const login = () => {
-        
     }
 
   return (
@@ -29,17 +70,26 @@ const Login = () => {
           <TextInput
             style={styles.input}
             placeholder='Correo'
+            autoCapitalize='none'
+            value={formik.values.email}
+            onChangeText={(text) => formik.setFieldValue('email', text)}
           />
           <TextInput
             style={styles.input}
             placeholder='Contraseña'
             secureTextEntry={true}
+            autoCapitalize='none'
+            value={formik.values.password}
+            onChangeText={(text) => formik.setFieldValue('password', text)}
           />
+          <Errors errors={formik.errors} title='Errores de campos' />
+          <Errors errors={errors} title='Mensajes del servidor' />
           <Pressable
             style={styles.btn}
-            onPress={login}
+            onPress={formik.handleSubmit}
           >
               <Text style={styles.btnText} >Ingresar</Text>
+              {loading && <ActivityIndicator size='small' color="#fff"/>}
           </Pressable>
       </View>
       <Pressable onPress={goToForgotPassword}><Text style={[styles.text, styles.link]} >Olvidé mi contraseña</Text></Pressable>
@@ -47,7 +97,14 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login;
+
+function validationSchema(){
+    return {
+        email: Yup.string().required("Campo requerido").email("Correo inválido"),
+        password: Yup.string().required("Campo requerido"),
+    }
+}
 
 const styles = StyleSheet.create({
     container: {
