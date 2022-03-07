@@ -17,7 +17,7 @@ const Cart = () => {
   }
   
   const getProducts = async () => {
-    const response = await axios.get(`shopping-cart/find-user-cart/${auth.user.id}`);
+    const response = await axios.get(`/shopping-cart/find-user-cart/${auth.user.id}`);
     axios.get(`/shopping-cart/${auth.user.id}/find-user-cart-details`)
      .then(function (response){
         useData(response.data);
@@ -72,10 +72,10 @@ const Cart = () => {
   
   return (
     <ScrollView>
+      <Button title='Refrescar' onPress={getProducts} />
       {
         datos !== null ? (
           <SafeAreaView style={styles.mainContainer}>
-            <Button title='Refrescar' onPress={getProducts} />
             {datos.length === 0 && <Text>Carrito Vacío</Text>}
           {
             datos.map((product,index)=>{
