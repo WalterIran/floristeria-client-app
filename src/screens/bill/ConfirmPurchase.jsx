@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, Alert } from 'react-native';
 import Detail from '../../components/OrderDetail.component';
+import useAuth from '../../hooks/useAuth';
 
 //AXIOS
 import axios from '../../api/axios';
@@ -8,6 +9,8 @@ const INSERT_URL = '/payment/registerbill/';
 const PAY_URL = '/payment/doPayment/';
 
 const ConfirmPurchase = () => {
+    const { auth } = useAuth();
+
     var datos = {
         userId: 11,
         deliveryDate: '2022-02-28',
@@ -22,7 +25,7 @@ const ConfirmPurchase = () => {
     };
 
     var datosPago = {
-        emailUser: "alejandro@gmail.com",
+        emailUser: auth?.user?.email,
         amount: "10000",
         tokenId: "tok_bypassPending",
         description: "Pago de compra en Interflora"
@@ -70,6 +73,10 @@ const ConfirmPurchase = () => {
             console.log(error);
             Alert.alert("Ocurrio un error al procesar su compra");
         }
+    }
+
+    const serchCartDetail = () =>{
+        
     }
 
     return (
