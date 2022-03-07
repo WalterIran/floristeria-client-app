@@ -82,7 +82,7 @@ const TabNavigation = () => {
                 name="Home" 
                 component={HomeScreen} 
                 options={{
-                    headerTitle: "Inicio",
+                    headerShown: false,
                     tabBarLabel: "",
                     tabBarIcon: ({color, size}) => (
                         <View style={styles.homeButton}>
