@@ -1,7 +1,77 @@
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, Alert } from 'react-native';
+import Detail from '../../components/OrderDetail.component';
+
+//AXIOS
+import axios from '../../api/axios';
+const INSERT_URL = '/payment/registerbill/';
+const PAY_URL = '/payment/doPayment/';
 
 const ConfirmPurchase = () => {
+    var datos = {
+        userId: 11,
+        deliveryDate: '2022-02-28',
+        taxAmount: 500.00,
+        destinationPersonName: "Roberto",
+        destinationPersonPhone: "982892",
+        destinationAddress: "Los Hidalgos",
+        destinationAddressDetails: "Casa 8",
+        city: "TGU",
+        dedicationMsg: "Te quiero",
+        cartId: 30
+    };
+
+    var datosPago = {
+        emailUser: "alejandro@gmail.com",
+        amount: "10000",
+        tokenId: "tok_bypassPending",
+        description: "Pago de compra en Interflora"
+    };
+
+    const insertBill = async () => {
+        try {
+            const response = await axios.post(
+                INSERT_URL,
+                JSON.stringify(datos),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: false
+                }
+            )
+            .then(res =>{
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Ocurrio un error al procesar su compra");
+        }
+    }
+
+    const pay = async () => {
+        try {
+            const response = await axios.post(
+                PAY_URL,
+                JSON.stringify(datosPago),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: false
+                }
+            )
+            .then(res =>{
+                console.log(res);
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        } catch (error) {
+            console.log(error);
+            Alert.alert("Ocurrio un error al procesar su compra");
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
@@ -9,13 +79,37 @@ const ConfirmPurchase = () => {
                     <View style={styles.containerTitles}>
                         <Text style={styles.title}>Entrega</Text>
                     </View>
-                    <Text></Text>
+                    <Text>Fecha de entrega: {datos.date}</Text>
+                    <Text>Entrega a: {datos.nombre +" "+datos.apellido}</Text>
+                    <Text>Dirección: {datos.direccion}</Text>
+                    <Text>Ciudad: {datos.selectedCity}</Text>
+                    <Text>Telefono: {datos.telefono}</Text>
                     <View style={styles.containerTitles}>
                         <Text style={styles.title}>Tu compra</Text>
                     </View>
-                    <Text></Text>
+                    <View style={{marginVertical: 12}}>
+                        <Detail product='Roma sexta' cant={1} price={45.00} />
+                        <Detail product='Roma sexta' cant={1} price={45.00} />
+                        <Detail product='Roma sexta' cant={1} price={45.00} />
+                        <Detail product='Roma sexta' cant={1} price={45.00} />
+                    </View>
+                    <View style={{marginVertical: 12}}>
+                        <View style={styles.totals}>
+                            <Text style={styles.text}>Subtotal:</Text>
+                            <Text style={styles.text}>$ 165</Text>
+                        </View>
+                        <View style={styles.totals}>
+                            <Text style={styles.text}>ISV:</Text>
+                            <Text style={styles.text}>$ 15</Text>
+                        </View>
+                        <View style={styles.totals}>
+                            <Text style={styles.text}>TOTAL:</Text>
+                            <Text style={styles.text}>$ 180</Text>
+                        </View>
+                    </View>
                     <Pressable
                         style={styles.btn}
+                        onPress={pay}
                     >
                         <Text style={styles.btnText} >Confirmar</Text>
                     </Pressable>
@@ -66,6 +160,13 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         fontSize: 24,
+    },
+    text: {
+        fontSize: 18,
+    },
+    totals: {
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
 })
 

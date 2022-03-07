@@ -8,7 +8,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 import UserNavigation from "./UserNavigation";
 import HomeScreen from '../screens/Home';
 import SearchScreen from '../screens/search/Search.screen';
-import CartScreen from '../screens/bill/DeliveryDetail';
+import CartScreen from '../screens/cart/Cart.screen';
 import OrdersNavigation from './OrdersNavigation';
 
 //Auth

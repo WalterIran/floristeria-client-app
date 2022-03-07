@@ -12,6 +12,9 @@ const DeliveryDetail = () => {
     const [nombre, setNombre] = useState(null);
     const [apellido, setApellido] = useState(null);
     const [telefono, setTelefono] = useState(null);
+    const [direccion, setDireccion] = useState(null);
+    const [referencias, setReferencias] = useState(null);
+    const [dedicatoria, setDedicatoria] = useState(null);
     const navigation = useNavigation();
 
     const onChange = (event, selectedDate) => {
@@ -35,7 +38,18 @@ const DeliveryDetail = () => {
 
     //Codigo de prueba
     const mostart = () => {
-        console.log(selectedCity);
+        var datosDelivery = {
+            date, 
+            nombre, 
+            apellido, 
+            telefono, 
+            direccion, 
+            referencias, 
+            dedicatoria, 
+            selectedCity
+        };
+
+        return datosDelivery;
     }
 
     return(
@@ -82,14 +96,17 @@ const DeliveryDetail = () => {
                         <TextInput
                             style={styles.input}
                             placeholder='Nombre'
+                            onChangeText={setNombre}
                         />
                         <TextInput 
                             style={styles.input}
                             placeholder='Apellido'
+                            onChangeText={setApellido}
                         />
                         <TextInput
                             style={styles.input}
                             placeholder='Telefono'
+                            onChangeText={setTelefono}
                         />
                     </View>
                     <View style={styles.containerTitles}>
@@ -106,12 +123,14 @@ const DeliveryDetail = () => {
                             multiline={true}
                             numberOfLines={5}
                             placeholder='Dirección'
+                            onChangeText={setDireccion}
                         />
                         <TextInput
                             style={styles.inputArea}
                             multiline={true}
                             numberOfLines={5}
                             placeholder='Puntos de referencia'
+                            onChangeText={setReferencias}
                         />
                         <View style={styles.pickerView}>
                             <Picker
@@ -137,6 +156,7 @@ const DeliveryDetail = () => {
                             multiline={true}
                             numberOfLines={5}
                             placeholder='Dedicatoria'
+                            onChangeText={setDedicatoria}
                         />
                     </View>
                     <Pressable
