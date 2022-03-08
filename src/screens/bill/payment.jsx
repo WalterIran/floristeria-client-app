@@ -8,6 +8,11 @@ const Payment = () => {
     const [cvv, setCVV] = useState(null);
     const [mes, setMes] = useState(null);
     const [year, setYear] = useState(null);
+    const navigation = useNavigation();
+
+    const goToConfirmPurchase = () => {
+        navigation.navigate("ConfirmPurchase");
+    }
 
     return (
         <SafeAreaView style={styles.container}>

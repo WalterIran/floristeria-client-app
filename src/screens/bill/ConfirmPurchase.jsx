@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Pressable, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import Detail from '../../components/OrderDetail.component';
 import useAuth from '../../hooks/useAuth';
 
@@ -10,18 +11,23 @@ const PAY_URL = '/payment/doPayment/';
 
 const ConfirmPurchase = () => {
     const { auth } = useAuth();
+    const [detail, setDetail] = useState(null);
+    const navigation = useNavigation();
+    const [subtotal, setSubTotal] = useState(null);
+    const [isv, setIsv] = useState(null);
+    const [total, setTotal] = useState(null);
 
     var datos = {
-        userId: 11,
+        userId: 23,
         deliveryDate: '2022-02-28',
-        taxAmount: 500.00,
-        destinationPersonName: "Roberto",
+        taxAmount: 55.00,
+        destinationPersonName: "Maria Dolmos",
         destinationPersonPhone: "982892",
         destinationAddress: "Los Hidalgos",
         destinationAddressDetails: "Casa 8",
         city: "TGU",
         dedicationMsg: "Te quiero",
-        cartId: 30
+        cartId: 33
     };
 
     var datosPago = {
@@ -75,54 +81,94 @@ const ConfirmPurchase = () => {
         }
     }
 
-    const serchCartDetail = () =>{
-        
+    const serchCartDetail = async () =>{
+        try {
+            const data = await axios.get('/shopping-cart/'+'23'+'/find-user-cart-details');
+            setDetail(data.data);
+            calculos(data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const calculos = (pDitail) =>{
+        let subTotal = 0;
+
+        for(let i = 0; i<pDitail.length; i++){
+            subTotal += pDitail[i].price * pDitail[i].quantity;
+        }
+
+        let isv = subTotal * 0.15;
+        let total = subTotal + isv;
+        setSubTotal(Math.round(subTotal,2));
+        setIsv(Math.round(isv,2));
+        setTotal(Math.round(total));
+    }
+
+    useEffect(() =>{
+        serchCartDetail();
+    }, [])
+
+    const goToSuccessfulPurchase = () => {
+        navigation.navigate("SuccessfulPurchase");
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <View style={styles.subcontainer}>
-                    <View style={styles.containerTitles}>
-                        <Text style={styles.title}>Entrega</Text>
-                    </View>
-                    <Text>Fecha de entrega: {datos.date}</Text>
-                    <Text>Entrega a: {datos.nombre +" "+datos.apellido}</Text>
-                    <Text>Dirección: {datos.direccion}</Text>
-                    <Text>Ciudad: {datos.selectedCity}</Text>
-                    <Text>Telefono: {datos.telefono}</Text>
-                    <View style={styles.containerTitles}>
-                        <Text style={styles.title}>Tu compra</Text>
-                    </View>
-                    <View style={{marginVertical: 12}}>
-                        <Detail product='Roma sexta' cant={1} price={45.00} />
-                        <Detail product='Roma sexta' cant={1} price={45.00} />
-                        <Detail product='Roma sexta' cant={1} price={45.00} />
-                        <Detail product='Roma sexta' cant={1} price={45.00} />
-                    </View>
-                    <View style={{marginVertical: 12}}>
-                        <View style={styles.totals}>
-                            <Text style={styles.text}>Subtotal:</Text>
-                            <Text style={styles.text}>$ 165</Text>
+        <>
+        {
+            detail ? (
+                <SafeAreaView style={styles.container}>
+                    <ScrollView>
+                        <View style={styles.subcontainer}>
+                            <View style={styles.containerTitles}>
+                                <Text style={styles.title}>Entrega</Text>
+                            </View>
+                            <Text>Fecha de entrega: {datos.deliveryDate}</Text>
+                            <Text>Entrega a: {datos.destinationPersonName}</Text>
+                            <Text>Dirección: {datos.destinationAddress}</Text>
+                            <Text>Ciudad: {datos.city}</Text>
+                            <Text>Telefono: {datos.destinationPersonPhone}</Text>
+                            <View style={styles.containerTitles}>
+                                <Text style={styles.title}>Tu compra</Text>
+                            </View>
+                            <View style={{marginVertical: 12}}>
+                                {
+                                    detail.map((item, index) => {
+                                        return (
+                                          <Detail key={item.productId} product={item.product.productName} cant={item.quantity} price={item.price} />
+                                        );
+                                    })
+                                }
+                            </View>
+                            <View style={{marginVertical: 12}}>
+                                <View style={styles.totals}>
+                                    <Text style={styles.text}>Subtotal:</Text>
+                                    <Text style={styles.text}>$ {subtotal}</Text>
+                                </View>
+                                <View style={styles.totals}>
+                                    <Text style={styles.text}>ISV:</Text>
+                                    <Text style={styles.text}>$ {isv}</Text>
+                                </View>
+                                <View style={styles.totals}>
+                                    <Text style={styles.text}>TOTAL:</Text>
+                                    <Text style={styles.text}>$ {total}</Text>
+                                </View>
+                            </View>
+                            <Pressable
+                                style={styles.btn}
+                                onPress={insertBill}
+                            >
+                                <Text style={styles.btnText} >Confirmar</Text>
+                            </Pressable>
                         </View>
-                        <View style={styles.totals}>
-                            <Text style={styles.text}>ISV:</Text>
-                            <Text style={styles.text}>$ 15</Text>
-                        </View>
-                        <View style={styles.totals}>
-                            <Text style={styles.text}>TOTAL:</Text>
-                            <Text style={styles.text}>$ 180</Text>
-                        </View>
-                    </View>
-                    <Pressable
-                        style={styles.btn}
-                        onPress={pay}
-                    >
-                        <Text style={styles.btnText} >Confirmar</Text>
-                    </Pressable>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                    </ScrollView>
+                </SafeAreaView>
+            ): (
+                <ActivityIndicator />
+              )
+        }        
+        </>
+        
     )
 }
 

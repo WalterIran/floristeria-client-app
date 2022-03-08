@@ -33,7 +33,7 @@ const DeliveryDetail = () => {
     };
 
     const goToPayment = () => {
-        navigation.navigate("ConfirmPurchase");
+        navigation.navigate("Payment");
     }
 
     //Codigo de prueba
