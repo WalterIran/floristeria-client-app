@@ -25,6 +25,7 @@ const SearchResults = ({route}) => {
                 return (
                   <ProductResult
                       key={product.id}
+                      productId={product.id}
                       img={product.productImgUrl} 
                       title={product.productName}
                       desc={product.productDescriptionTitle}
