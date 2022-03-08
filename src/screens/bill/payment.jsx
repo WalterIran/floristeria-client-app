@@ -53,6 +53,7 @@ const Payment = () => {
                 </View>
                 <Pressable
                     style={styles.btn}
+                    onPress={goToConfirmPurchase}
                 >
                     <Text style={styles.btnText} >Continuar</Text>
                 </Pressable>

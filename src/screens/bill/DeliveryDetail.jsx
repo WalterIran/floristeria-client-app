@@ -33,7 +33,7 @@ const DeliveryDetail = () => {
     };
 
     const goToPayment = () => {
-        navigation.navigate("Payment");
+        navigation.navigate("PaymentMetod");
     }
 
     //Codigo de prueba
@@ -161,7 +161,7 @@ const DeliveryDetail = () => {
                     </View>
                     <Pressable
                         style={styles.btn}
-                        onPress={mostart}
+                        onPress={goToPayment}
                     >
                         <Text style={styles.btnText} >Continuar</Text>
                     </Pressable>

@@ -18,7 +18,7 @@ const ConfirmPurchase = () => {
     const [total, setTotal] = useState(null);
 
     var datos = {
-        userId: 23,
+        userId: auth?.user?.id,
         deliveryDate: '2022-02-28',
         taxAmount: 55.00,
         destinationPersonName: "Maria Dolmos",
@@ -83,7 +83,7 @@ const ConfirmPurchase = () => {
 
     const serchCartDetail = async () =>{
         try {
-            const data = await axios.get('/shopping-cart/'+'23'+'/find-user-cart-details');
+            const data = await axios.get('/shopping-cart/'+auth?.user?.id+'/find-user-cart-details');
             setDetail(data.data);
             calculos(data.data);
         } catch (error) {
@@ -156,7 +156,7 @@ const ConfirmPurchase = () => {
                             </View>
                             <Pressable
                                 style={styles.btn}
-                                onPress={insertBill}
+                                onPress={goToSuccessfulPurchase}
                             >
                                 <Text style={styles.btnText} >Confirmar</Text>
                             </Pressable>
