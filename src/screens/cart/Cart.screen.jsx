@@ -9,62 +9,73 @@ import useAuth from '../../hooks/useAuth';
 
 const Cart = () => {
   const { auth } = useAuth();
-  const [datos,useData] = useState(null);
+  const [data, setData] = useState(null);
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
 
   const goToDelivery = () => {
       navigation.navigate('Delivery');
   }
   
   const getProducts = async () => {
+    setLoading(true);
     const response = await axios.get(`/shopping-cart/find-user-cart/${auth.user.id}`);
     axios.get(`/shopping-cart/${auth.user.id}/find-user-cart-details`)
      .then(function (response){
-        useData(response.data);
+        setData(response.data);
      })
      .catch(function (error){
        console.error(error);
      });
+     setLoading(false);
   }
   
-   const incrementQuantity = (id) =>{
-    axios.put(`/shopping-cart/${datos[0].cartId}/product/${id}/add`)
-    .then(function (response){
-      //1)filtrar dentro de useData el objeto que contenga el productId == productId,  2) incrementar el objeto + 1, 3)volver introducir los datos a useData volver introducir los datos a useData 
-      /*
-      const products = datos.filter((product)=>{
-          return product.productId == id;
-        });
-      
-      const obj = products.filter((value)=>{
-        return value.quantity = value.quantity - 1;
+   const incrementQuantity = async (id) =>{
+    try {
+      const response = await axios.put(`/shopping-cart/${data[0].cartId}/product/${id}/add`)
+      const detail = data;
+      const prodIndex = detail.findIndex(prod => {
+        return prod.productId === id
       });
-      useData(obj);*/
-     // getProducts();
-    })
-    .catch(function (error){
+      detail[prodIndex] = {...detail[prodIndex], quantity: detail[prodIndex].quantity + 1};
+      setData([...detail]);
+    } catch (error) {
       alert(error);
-    })
+    }
   }
 
-  const decrementQuantity = (id) =>{
-    axios.put(`/shopping-cart/${datos[0].cartId}/product/${id}/subtract`)
-    .then(function (response){
-      getProducts();    
-    })
-    .catch(function (error){
+  const decrementQuantity = async (id) =>{
+    try {
+      const response = await axios.put(`/shopping-cart/${data[0].cartId}/product/${id}/subtract`);
+      if(response.data.count === 1) {
+        const detail = data;
+        const prodIndex = detail.findIndex(prod => {
+          return prod.productId === id
+        });
+        detail[prodIndex] = {...detail[prodIndex], quantity: detail[prodIndex].quantity - 1};
+        setData([...detail]);
+      }else {
+        throw new Error('Mínimo un producto o eliminalo de tu carrito');
+      }
+    } catch (error) {
       alert(error);
-    })
+    }
+    
   }
 
-  const cancelledProduct = (id) =>{
-    axios.delete(`/shopping-cart/${datos[0].cartId}/product/${id}/cancel`)
-    .then(function (response){
-      getProducts();    
-    })
-    .catch(function (error){
+  const cancelledProduct = async (id) => {
+    try {
+      const response = await axios.delete(`/shopping-cart/${data[0].cartId}/product/${id}/cancel`);
+      if(response.data.deleteCount === 1){
+        const detail = data.filter( (value) => {
+          return value.productId !== id
+        });
+        setData([...detail]);
+      }
+    } catch (error) {
       alert(error);
-    })
+    }
+    
   }
   useEffect(() => {
     getProducts()
@@ -74,42 +85,42 @@ const Cart = () => {
     <ScrollView>
       <Button title='Refrescar' onPress={getProducts} />
       {
-        datos !== null ? (
+        data !== null && !loading ? (
           <SafeAreaView style={styles.mainContainer}>
-            {datos.length === 0 && <Text>Carrito Vacío</Text>}
-          {
-            datos.map((product,index)=>{
-                return (
-                  <View key={index} style={styles.productContainer}>
-                  <View style={styles.productImageContainer}>
-                    <Image 
-                      source={{uri:product.product.productImgUrl}}
-                      style={styles.img}
-                    />
-                  </View>
-                  <View style={styles.productInformationContainer}>
-                    <Text style={styles.title}>{product.product.productName}</Text>
-                    <Text style={styles.textPrice}>$ {product.price}</Text>
-                    <View style={styles.information}>
-                        <Pressable onPress={()=>decrementQuantity(product.productId)}>
-                          <EvilIcons name="arrow-left" style={styles.button}></EvilIcons>
-                        </Pressable>
-                        <Text style={styles.textQuantity}>{product.quantity}</Text>  
-                        <Pressable onPress={()=>incrementQuantity(product.productId)}>
-                          <EvilIcons name="arrow-right" style={styles.button}></EvilIcons>
-                        </Pressable>
-                        <Pressable  onPress={()=>cancelledProduct(product.productId)}>
-                          <EvilIcons name="trash" style={styles.trashButton}></EvilIcons>
-                        </Pressable>
+            {data.length === 0 && <Text>Carrito Vacío</Text>}
+            {
+              data.map((product,index)=>{
+                  return (
+                    <View key={product.productId} style={styles.productContainer}>
+                      <View style={styles.productImageContainer}>
+                        <Image 
+                          source={{uri:product.product.productImgUrl}}
+                          style={styles.img}
+                        />
+                      </View>
+                      <View style={styles.productInformationContainer}>
+                        <Text style={styles.title}>{product.product.productName}</Text>
+                        <Text style={styles.textPrice}>$ {product.price}</Text>
+                        <View style={styles.information}>
+                          <Pressable onPress={()=>decrementQuantity(product.productId)}>
+                            <EvilIcons name="arrow-left" style={styles.button}></EvilIcons>
+                          </Pressable>
+                          <Text style={styles.textQuantity}>{product.quantity}</Text>
+                          <Pressable onPress={()=>incrementQuantity(product.productId)}>
+                            <EvilIcons name="arrow-right" style={styles.button}></EvilIcons>
+                          </Pressable>
+                          <Pressable  onPress={()=>cancelledProduct(product.productId)}>
+                            <EvilIcons name="trash" style={styles.trashButton}></EvilIcons>
+                          </Pressable>
                         </View>
                       </View>
-                  </View>  
-                );
-            })
-          } 
-          <Pressable style={styles.continueBottun} onPress={goToDelivery}>
-            <Text style={styles.continueBottunText}>Continuar</Text>
-          </Pressable>
+                    </View>  
+                  );
+              })
+            } 
+            <Pressable style={styles.continueBottun} onPress={goToDelivery}>
+              <Text style={styles.continueBottunText}>Continuar</Text>
+            </Pressable>
           </SafeAreaView>
         ) : (
           <ActivityIndicator />
@@ -131,13 +142,26 @@ const styles = StyleSheet.create({
   },
   productContainer:{
     flexDirection: 'row',
-    paddingBottom: 30
+    padding: 10,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    marginBottom: 30,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#BFA658',
+    shadowColor: '#000',
+    shadowOffset: {
+        width: 0,
+        height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 2,
   },
   productImageContainer:{
-    width: '45%'
+    flex: 1,
   },
   productInformationContainer:{
-    width: '45%',
+    flex: 1,
     flexDirection:'column',
     padding:20,
   },
@@ -151,8 +175,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   title:{
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 24,
     color: '#BFA658'
   },
   textPrice:{

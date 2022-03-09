@@ -50,23 +50,27 @@ const Product = ({route}) => {
 
         <SafeAreaView style={styles.mainContainer}>
 
-                <View style={styles.headerContainer}>
-                  <Text style={styles.title}>{datos.productName}</Text>
-                  <Text style={styles.price}>{datos.price}</Text>
-                </View>
-                <View style={styles.imgContainer}>
-                    <Image style={styles.img}
-                      source={{ uri: datos.productImgUrl}} />
-                  </View><View style={styles.infoContainer}>
-                    <Text style={styles.textTitle}>{datos.productDescriptionTitle}</Text>
-                    <Text style={styles.textDescription}>{datos.productDescription}</Text>
-                  </View>
+          <View style={styles.headerContainer}>
+            <Text style={styles.title}>{datos.productName}</Text>
+            <Text style={styles.price}>{datos.price}</Text>
+          </View>
+          <View style={styles.imgContainer}>
+            <Image 
+              style={styles.img}
+              source={{ uri: datos.productImgUrl}} 
+            />
+          </View>
+          <View style={styles.infoContainer}>
+            <Text style={styles.textTitle}>{datos.productDescriptionTitle}</Text>
+            <Text style={styles.textDescription}>{datos.productDescription}</Text>
+          </View>
 
-    
-          <Pressable style={styles.continueBottun} onPress={addToCart}>
-                <Text style={styles.continueBottunText}>Agregar a carrito</Text>
-                {loading && <ActivityIndicator />}
-          </Pressable>
+          <View style={{width:'100%', paddingHorizontal: 10}}>
+            <Pressable style={styles.continueBotton} onPress={addToCart}>
+                  <Text style={styles.continueBottonText}>Agregar a carrito</Text>
+                  {loading && <ActivityIndicator />}
+            </Pressable>
+          </View>
         </SafeAreaView>
         ) : (
           <ActivityIndicator />
@@ -80,37 +84,37 @@ export default Product
 
 const styles = StyleSheet.create({
   mainContainer:{
-    width:'100%',
-    height:'100%',
-    paddingHorizontal: 10,
+    flex: 1,
     flexDirection:'column'
   },
   headerContainer:{
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   imgContainer:{
     flexDirection: 'row',
     width: '100%',
-    height: 250,
-    marginVertical: 30
+    height: 400,
+    marginBottom: 8,
+    backgroundColor: '#333',
   },  
   img:{
-    height: 260,
+    height: '100%',
     width: '100%',
     borderRadius: 10,
     resizeMode: 'contain',
   },
   infoContainer:{
     flexDirection: 'column',
-    paddingBottom: 30
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   title:{
-    fontSize: 30,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: '700',
     color: '#000',
-    marginLeft: 10
   },
   price:{
     fontSize: 25,
@@ -119,18 +123,16 @@ const styles = StyleSheet.create({
     
   },
   textTitle:{
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign:'center',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#333',
   },
   textDescription:{
-    fontSize: 25,
+    fontSize: 16,
+    paddingVertical: 4,
     color: '#000',
-    padding: 18,
-    textAlign:'justify',
   },
-  continueBottun:{
+  continueBotton:{
     backgroundColor: '#BFA658',
     fontSize: 24,
     height: 60,
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
-  continueBottunText:{
+  continueBottonText:{
     color: '#fff',
     textAlign: 'center',
     fontSize: 24,
