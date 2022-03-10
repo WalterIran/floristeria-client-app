@@ -9,7 +9,7 @@ import axios from '../../api/axios';
 const INSERT_URL = '/payment/registerbill/';
 const PAY_URL = '/payment/doPayment/';
 
-const ConfirmPurchase = () => {
+const ConfirmPurchase = ({route}) => {
     const { auth } = useAuth();
     const [detail, setDetail] = useState(null);
     const navigation = useNavigation();
@@ -17,31 +17,16 @@ const ConfirmPurchase = () => {
     const [isv, setIsv] = useState(null);
     const [total, setTotal] = useState(null);
 
-    var datos = {
-        userId: auth?.user?.id,
-        deliveryDate: '2022-02-28',
-        taxAmount: 55.00,
-        destinationPersonName: "Maria Dolmos",
-        destinationPersonPhone: "982892",
-        destinationAddress: "Los Hidalgos",
-        destinationAddressDetails: "Casa 8",
-        city: "TGU",
-        dedicationMsg: "Te quiero",
-        cartId: 33
-    };
-
-    var datosPago = {
-        emailUser: auth?.user?.email,
-        amount: "10000",
-        tokenId: "tok_bypassPending",
-        description: "Pago de compra en Interflora"
-    };
+    var datosDelivery = route.params.data;
 
     const insertBill = async () => {
+        datosDelivery.cartId = detail[0].cartId;
+        datosDelivery.taxAmount = isv;
+
         try {
             const response = await axios.post(
                 INSERT_URL,
-                JSON.stringify(datos),
+                JSON.stringify(datosDelivery),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: false
@@ -49,6 +34,7 @@ const ConfirmPurchase = () => {
             )
             .then(res =>{
                 console.log(res);
+                goToSuccessfulPurchase();
             })
             .catch(err => {
                 console.log(err);
@@ -61,6 +47,13 @@ const ConfirmPurchase = () => {
 
     const pay = async () => {
         try {
+            var datosPago = {
+                emailUser: auth?.user?.email,
+                amount: (total*100).toString(),
+                tokenId: "tok_bypassPending",
+                description: "Pago de compra en Interflora"
+            };
+
             const response = await axios.post(
                 PAY_URL,
                 JSON.stringify(datosPago),
@@ -100,9 +93,9 @@ const ConfirmPurchase = () => {
 
         let isv = subTotal * 0.15;
         let total = subTotal + isv;
-        setSubTotal(Math.round(subTotal,2));
-        setIsv(Math.round(isv,2));
-        setTotal(Math.round(total));
+        setSubTotal(subTotal.toFixed(2));
+        setIsv(isv.toFixed(2));
+        setTotal(total.toFixed(2));
     }
 
     useEffect(() =>{
@@ -123,11 +116,11 @@ const ConfirmPurchase = () => {
                             <View style={styles.containerTitles}>
                                 <Text style={styles.title}>Entrega</Text>
                             </View>
-                            <Text>Fecha de entrega: {datos.deliveryDate}</Text>
-                            <Text>Entrega a: {datos.destinationPersonName}</Text>
-                            <Text>Dirección: {datos.destinationAddress}</Text>
-                            <Text>Ciudad: {datos.city}</Text>
-                            <Text>Telefono: {datos.destinationPersonPhone}</Text>
+                            <Text>Fecha de entrega: {datosDelivery.deliveryDate}</Text>
+                            <Text>Entrega a: {datosDelivery.destinationPersonName}</Text>
+                            <Text>Dirección: {datosDelivery.destinationAddress}</Text>
+                            <Text>Ciudad: {datosDelivery.city}</Text>
+                            <Text>Telefono: {datosDelivery.destinationPersonPhone}</Text>
                             <View style={styles.containerTitles}>
                                 <Text style={styles.title}>Tu compra</Text>
                             </View>
@@ -156,7 +149,7 @@ const ConfirmPurchase = () => {
                             </View>
                             <Pressable
                                 style={styles.btn}
-                                onPress={goToSuccessfulPurchase}
+                                onPress={() => {pay(); insertBill();}}
                             >
                                 <Text style={styles.btnText} >Confirmar</Text>
                             </Pressable>

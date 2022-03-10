@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import useAuth from '../../hooks/useAuth';
 
 const DeliveryDetail = () => {
     const [selectedCity, setSelectedCity] = useState();
@@ -16,6 +17,20 @@ const DeliveryDetail = () => {
     const [referencias, setReferencias] = useState(null);
     const [dedicatoria, setDedicatoria] = useState(null);
     const navigation = useNavigation();
+    const { auth } = useAuth();
+
+    var datosDelivery = {
+        userId: auth?.user?.id,
+        deliveryDate: date.toDateString(),
+        taxAmount: 0,
+        destinationPersonName: nombre + ' ' + apellido, 
+        destinationPersonPhone: telefono, 
+        destinationAddress: direccion,  
+        destinationAddressDetails: referencias, 
+        dedicationMsg: dedicatoria, 
+        city: selectedCity,
+        cartId: 0
+    };
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -33,23 +48,7 @@ const DeliveryDetail = () => {
     };
 
     const goToPayment = () => {
-        navigation.navigate("PaymentMetod");
-    }
-
-    //Codigo de prueba
-    const mostart = () => {
-        var datosDelivery = {
-            date, 
-            nombre, 
-            apellido, 
-            telefono, 
-            direccion, 
-            referencias, 
-            dedicatoria, 
-            selectedCity
-        };
-
-        return datosDelivery;
+        navigation.push("PaymentMetod", {data: datosDelivery});
     }
 
     return(

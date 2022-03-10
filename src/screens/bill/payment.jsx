@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView } from 'react-native';
 
-const Payment = () => {
+const Payment = ({route}) => {
     const [titular, setTitular] = useState(null);
     const [numTarjeta, setNum] = useState(null);
     const [cvv, setCVV] = useState(null);
@@ -10,8 +10,10 @@ const Payment = () => {
     const [year, setYear] = useState(null);
     const navigation = useNavigation();
 
+    var datos = route.params.data;
+
     const goToConfirmPurchase = () => {
-        navigation.navigate("ConfirmPurchase");
+        navigation.push("ConfirmPurchase", {data: datos});
     }
 
     return (
