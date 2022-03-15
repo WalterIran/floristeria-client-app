@@ -2,11 +2,18 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, SafeAreaView, Pressable, Image } from 'react-native';
 
 const SuccessfulPurchase = () => {
+    const navigation = useNavigation();
+
+    const goToHome = () => {
+        navigation.navigate("Cart");
+        navigation.navigate("Home");
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Image style={styles.img} source={require('../../assets/sp.png')} />
             <Text style={styles.text}>Compra exitosa</Text>
-            <Pressable style={styles.btn}>
+            <Pressable style={styles.btn} onPress={goToHome}>
                 <Text style={styles.btnText} >Ir a inicio</Text>
             </Pressable>
         </SafeAreaView>

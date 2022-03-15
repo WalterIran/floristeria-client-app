@@ -38,10 +38,11 @@ const ConfirmPurchase = ({route}) => {
             })
             .catch(err => {
                 console.log(err);
+                Alert.alert("Error", "Error al procesar la compra");
             })
         } catch (error) {
             console.log(error);
-            Alert.alert("Ocurrio un error al procesar su compra");
+            Alert.alert("Error","Ocurrio un error al procesar su compra");
         }
     }
 
@@ -67,6 +68,7 @@ const ConfirmPurchase = ({route}) => {
             })
             .catch(err => {
                 console.log(err);
+                Alert.alert("Error al recibir el pago");
             })
         } catch (error) {
             console.log(error);

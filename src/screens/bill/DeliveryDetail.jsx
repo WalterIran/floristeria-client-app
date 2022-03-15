@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView, Alert} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import useAuth from '../../hooks/useAuth';
@@ -48,7 +48,13 @@ const DeliveryDetail = () => {
     };
 
     const goToPayment = () => {
-        navigation.push("PaymentMetod", {data: datosDelivery});
+        if(date && nombre && apellido && telefono &&
+        direccion && selectedCity && referencias && dedicatoria){
+            navigation.push("PaymentMetod", {data: datosDelivery});
+        }
+        else{
+            Alert.alert("Advertencia", "Ingrese todo los campos obligatorios");
+        }
     }
 
     return(
