@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import { formatter } from '../utils/formatter';
 
 const OrderDetail = ({product, cant, price}) => {
   return (
@@ -8,7 +8,7 @@ const OrderDetail = ({product, cant, price}) => {
           <Text style={styles.text}>{product}</Text>
           <Text style={styles.text}>Cant: {cant}</Text>
       </View>
-      <Text style={styles.text}>$ {parseFloat(price)}</Text>
+      <Text style={styles.text}>{formatter.format(price)}</Text>
     </View>
   )
 }

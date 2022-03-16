@@ -15,7 +15,8 @@ const Orders = () => {
   const navigation = useNavigation();
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
-  const [orders, setOrders] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [ isNext, setIsNext ] = useState(false);
 
   const goToOrderDetail = (billId) => {
     navigation.navigate('OrderDetail', {billId});
@@ -30,7 +31,13 @@ const Orders = () => {
   const loadOrders = async () => {
     try {
       const response = await axiosPrivate.get(`orders/byuser/${auth.user.id}/confirmed?limit=${LIMIT}&page=${PAGE}`);
-      setOrders(response.data.orders);
+      setOrders([...orders, ...response.data.orders]);
+      if(response.data.pagination.nextPage !== null){
+        PAGE = response.data.pagination.nextPage;
+        setIsNext(true);
+      }else{
+        setIsNext(false)
+      }
     } catch (error) {
       console.error(error);
     }
@@ -40,7 +47,7 @@ const Orders = () => {
   return (
     <SafeAreaView>
       {
-        orders ? (
+        orders.length > 0 ? (
           <FlatList 
             data={orders}
             numColumns={1}
