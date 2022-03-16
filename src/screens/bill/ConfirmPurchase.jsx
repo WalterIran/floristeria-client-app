@@ -65,6 +65,7 @@ const ConfirmPurchase = ({route}) => {
             )
             .then(res =>{
                 console.log(res);
+                insertBill();
             })
             .catch(err => {
                 console.log(err);
@@ -72,7 +73,7 @@ const ConfirmPurchase = ({route}) => {
             })
         } catch (error) {
             console.log(error);
-            Alert.alert("Ocurrio un error al procesar su compra");
+            Alert.alert("Ocurrio un error al procesar su pago");
         }
     }
 
@@ -151,7 +152,7 @@ const ConfirmPurchase = ({route}) => {
                             </View>
                             <Pressable
                                 style={styles.btn}
-                                onPress={() => {pay(); insertBill();}}
+                                onPress={pay}
                             >
                                 <Text style={styles.btnText} >Confirmar</Text>
                             </Pressable>

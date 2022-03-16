@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, Alert } from 'react-native';
 
 const Payment = ({route}) => {
     const [titular, setTitular] = useState(null);
@@ -13,7 +13,17 @@ const Payment = ({route}) => {
     var datos = route.params.data;
 
     const goToConfirmPurchase = () => {
-        navigation.push("ConfirmPurchase", {data: datos});
+        if(titular, numTarjeta, cvv, mes, year){
+            if(numTarjeta.length == 16){
+                navigation.push("ConfirmPurchase", {data: datos});
+            }
+            else{
+                Alert.alert("Advertencia", "Porfavor ingrese un numero de tarjeta valido");
+            }
+        }
+        else{
+            Alert.alert("Advertencia", "Porfavor ingrese todos los campos.");
+        }
     }
 
     return (

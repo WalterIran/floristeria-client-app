@@ -53,7 +53,7 @@ const DeliveryDetail = () => {
             navigation.push("PaymentMetod", {data: datosDelivery});
         }
         else{
-            Alert.alert("Advertencia", "Ingrese todo los campos obligatorios");
+            Alert.alert("Advertencia", "Ingrese todo los campos");
         }
     }
 
