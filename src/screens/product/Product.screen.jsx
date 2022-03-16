@@ -6,25 +6,22 @@ import { useNavigation } from '@react-navigation/native';
 import {useState, useEffect} from 'react';
 import axios from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
-import "intl";
-import "intl/locale-data/jsonp/en";
+import { formatter } from '../../utils/formatter';
 
 const Product = ({route}) => {
   const [datos,useData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [ discount, setDiscount ] = useState(0);
   const { productId } = route?.params;
   const {auth} = useAuth();
   const navigation = useNavigation();
-  
-  const formatter = new Intl.NumberFormat('es-HN', {
-    style: 'currency',
-    currency: 'HNL'
-  });
 
   const getProduct = () => {
     axios.get(`/products/byid/${productId}`)
      .then(function (response){
         useData(response.data.product);
+        const datos = response.data.product;
+        defineDiscount(datos.price, datos.discount, datos.discountExpirationDate, datos.product_tag)
      })
      .catch(function (error){
        alert(error);
@@ -37,7 +34,11 @@ const Product = ({route}) => {
     try {
       const response = await axios.get(`/shopping-cart/find-user-cart/${auth.user.id}`);
       const cartId = response.data.cartId;
-      const response2 = await axios.post(`/shopping-cart/${cartId}/product/${productId}/new`);
+      const response2 = await axios.post(`/shopping-cart/${cartId}/product/${productId}/new`,
+        {
+          price: discount > 0 ? discount : datos.price
+        }
+      );
       alert('Producto agregado al carrito');
       navigation.navigate('Payment')
     } catch (error) {
@@ -48,8 +49,50 @@ const Product = ({route}) => {
   }
 
   useEffect(() => {
-    getProduct()
+    getProduct();
   }, []);
+
+  const defineDiscount = (prodPrice, prodDiscount, prodExpDate, prodTags) => {
+    let disc = 0
+    const tagDiscounts = prodTags.filter(tag => {
+      
+      if(new Date(tag.tag.discountExpirationDate) > new Date() && tag.tag.discount !== null){
+        return tag.tag.discount;
+      }
+    }).map(item => item.tag.discount);
+
+    const maxTagDiscount = Math.max(...tagDiscounts);
+    
+    prodDiscount = prodDiscount || 0;
+    
+    if(prodExpDate === null && maxTagDiscount === 0) {
+      disc = 0;
+    }else{
+      if(prodExpDate === null && maxTagDiscount !== 0){
+        disc = maxTagDiscount;
+      }else{
+        if(prodDiscount > maxTagDiscount){
+          disc = prodDiscount;
+        }else{
+          disc = maxTagDiscount;
+        }
+      }
+    }
+
+
+    disc /= 100;
+
+    if(disc > 0){
+      setDiscount(prodPrice - (prodPrice * disc));
+    }
+  }
+
+  const priceStyle = {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: discount > 0 ? '#aaa' :'#BFA658',
+    textDecorationLine: discount > 0 ? 'line-through' : 'none'
+  }
   
   return (
     <ScrollView>
@@ -60,7 +103,16 @@ const Product = ({route}) => {
 
           <View style={styles.headerContainer}>
             <Text style={styles.title}>{datos.productName}</Text>
-            <Text style={styles.price}>{formatter.format(datos.price)}</Text>
+            <View style={styles.priceSection}>
+                {discount > 0 && (
+                    <>
+                        <Text style={styles.discount}>{formatter.format(discount)}</Text>
+                        <Text> - </Text>
+                    </>
+                )}
+                <Text style={priceStyle}>{formatter.format(datos.price)}</Text>
+            </View>
+            {/* <Text style={styles.price}>{formatter.format(datos.price)}</Text> */}
           </View>
           <View style={styles.imgContainer}>
             <Image 
@@ -124,11 +176,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#000',
   },
-  price:{
+  priceSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  discount: {
     fontSize: 25,
     fontWeight: 'bold',
     color: '#BFA658',
-    
   },
   textTitle:{
     fontSize: 18,

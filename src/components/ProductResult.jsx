@@ -3,12 +3,19 @@ import React from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { formatter } from '../utils/formatter';
 
-const ProductResult = ({img, title, desc, price, productId}) => {
+const ProductResult = ({img, title, desc, price, productId, discount}) => {
     const navigation = useNavigation();
 
     const goTo = (id) => {
         navigation.navigate('ProductScreen', {productId})
-    }   
+    }
+
+    const priceStyle = {
+        fontWeight: '700',
+        color: discount > 0 ? '#aaa' :'#333',
+        textDecorationLine: discount > 0 ? 'line-through' : 'none'
+    }
+
   return (
       <TouchableOpacity style={{width: '100%'}} onPress={() => goTo(productId)}>
         <View style={styles.productContainer}>
@@ -18,7 +25,15 @@ const ProductResult = ({img, title, desc, price, productId}) => {
             <View style={styles.descContainer}>
                 <Text style={styles.title}>{title}</Text>
                 <Text style={styles.desc}>{desc}</Text>
-                <Text style={styles.price}>{formatter.format(price)}</Text>
+                <View style={styles.priceSection}>
+                    {discount > 0 && (
+                        <>
+                            <Text style={styles.discount}>{formatter.format(discount)}</Text>
+                            <Text> - </Text>
+                        </>
+                    )}
+                    <Text style={priceStyle}>{formatter.format(price)}</Text>
+                </View>
             </View>
         </View>
       </TouchableOpacity>
@@ -66,7 +81,12 @@ const styles = StyleSheet.create({
     desc: {
         color: "#666"
     },
-    price: {
+    priceSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    discount: {
         fontWeight: '700',
+        color: '#333',
     },
 });
