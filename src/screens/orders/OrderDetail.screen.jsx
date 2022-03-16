@@ -5,6 +5,7 @@ import "intl/locale-data/jsonp/en";
 import Status from '../../components/Status.component';
 import Detail from '../../components/OrderDetail.component';
 import { useNavigation } from '@react-navigation/native';
+import { formatter } from '../../utils/formatter';
 
 import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 
@@ -113,15 +114,15 @@ const OrderDetail = ({route}) => {
                     </View>
                     <View style={styles.totals}>
                       <Text style={styles.text}>Subtotal</Text>
-                      <Text style={styles.text}>$ {detail.subtotal}</Text>
+                      <Text style={styles.text}>{formatter.format(detail.subtotal)}</Text>
                     </View>
                     <View style={styles.totals}>
                       <Text style={styles.text}>ISV</Text>
-                      <Text style={styles.text}>$ {detail.taxAmount}</Text>
+                      <Text style={styles.text}>{formatter.format(detail.taxAmount)}</Text>
                     </View>
                     <View style={styles.totals}>
                       <Text style={styles.text}>TOTAL</Text>
-                      <Text style={styles.text}>$ {detail.total}</Text>
+                      <Text style={styles.text}>{formatter.format(detail.total)}</Text>
                     </View>
                   </View>
                   <View style={styles.section}>

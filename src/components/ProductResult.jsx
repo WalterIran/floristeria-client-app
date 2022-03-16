@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { formatter } from '../utils/formatter';
 
 const ProductResult = ({img, title, desc, price, productId}) => {
     const navigation = useNavigation();
@@ -17,7 +18,7 @@ const ProductResult = ({img, title, desc, price, productId}) => {
             <View style={styles.descContainer}>
                 <Text style={styles.title}>{title}</Text>
                 <Text style={styles.desc}>{desc}</Text>
-                <Text style={styles.price}>{price} $</Text>
+                <Text style={styles.price}>{formatter.format(price)}</Text>
             </View>
         </View>
       </TouchableOpacity>

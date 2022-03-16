@@ -6,14 +6,21 @@ import { useNavigation } from '@react-navigation/native';
 import {useState, useEffect} from 'react';
 import axios from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
-
+import "intl";
+import "intl/locale-data/jsonp/en";
 
 const Product = ({route}) => {
   const [datos,useData] = useState(null);
   const [loading, setLoading] = useState(false);
   const { productId } = route?.params;
   const {auth} = useAuth();
+  const navigation = useNavigation();
   
+  const formatter = new Intl.NumberFormat('es-HN', {
+    style: 'currency',
+    currency: 'HNL'
+  });
+
   const getProduct = () => {
     axios.get(`/products/byid/${productId}`)
      .then(function (response){
@@ -32,6 +39,7 @@ const Product = ({route}) => {
       const cartId = response.data.cartId;
       const response2 = await axios.post(`/shopping-cart/${cartId}/product/${productId}/new`);
       alert('Producto agregado al carrito');
+      navigation.navigate('Payment')
     } catch (error) {
       alert('Algo Salió mal');
     } finally {
@@ -52,7 +60,7 @@ const Product = ({route}) => {
 
           <View style={styles.headerContainer}>
             <Text style={styles.title}>{datos.productName}</Text>
-            <Text style={styles.price}>{datos.price}</Text>
+            <Text style={styles.price}>{formatter.format(datos.price)}</Text>
           </View>
           <View style={styles.imgContainer}>
             <Image 

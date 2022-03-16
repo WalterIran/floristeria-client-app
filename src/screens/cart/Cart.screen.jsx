@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import axios from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
+import { formatter } from '../../utils/formatter';
 
 const Cart = () => {
   const { auth } = useAuth();
@@ -78,8 +79,12 @@ const Cart = () => {
     
   }
   useEffect(() => {
-    getProducts()
-  }, []);
+    getProducts();
+    const unsub = navigation.addListener('focus', getProducts);
+    return unsub;
+  }, [navigation]);
+
+
   
   return (
     <ScrollView>
@@ -100,7 +105,7 @@ const Cart = () => {
                       </View>
                       <View style={styles.productInformationContainer}>
                         <Text style={styles.title}>{product.product.productName}</Text>
-                        <Text style={styles.textPrice}>$ {product.price}</Text>
+                        <Text style={styles.textPrice}>{formatter.format(product.price)}</Text>
                         <View style={styles.information}>
                           <Pressable onPress={()=>decrementQuantity(product.productId)}>
                             <EvilIcons name="arrow-left" style={styles.button}></EvilIcons>
