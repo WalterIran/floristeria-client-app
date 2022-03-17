@@ -5,21 +5,37 @@ import {
     StyleSheet,
     Text
 } from 'react-native';
+import { formatter } from '../utils/formatter';
 
-export default class MenuItem extends React.Component {
-    render() {
-        return (
-            <View style={styles.menuItem}>
-                <Image
-               /* source={{uri:itemImage}} */
-                style={styles.image} />
-                <Text style={styles.Text}> {this.props.Title}</Text>
-                <Text style={styles.descripcion} > {this.props.Descripcion}</Text>
-                <Text style={styles.Precio}> {this.props.Price}</Text>
-            </View>
-     );
+const MenuItem = ({itemImage, title, description, price, discount, productId}) => {
+    const priceStyle = {
+        fontWeight: '700',
+        color: discount > 0 ? '#aaa' :'#333',
+        textDecorationLine: discount > 0 ? 'line-through' : 'none'
     }
+
+    return (
+        <View style={styles.menuItem}>
+            <Image
+                source={{uri:itemImage}}
+                style={styles.image}
+            />
+            <Text style={styles.Text}> {title}</Text>
+            <Text style={styles.description} > {description}</Text>
+            <View style={styles.priceSection}> 
+                {discount > 0 && (
+                        <>
+                        <Text style={styles.discount}>{formatter.format(discount)}</Text>
+                        <Text> - </Text>
+                    </>
+                )}
+                <Text style={priceStyle}> {formatter.format(price)}</Text>
+            </View>
+        </View>
+    );
 }
+
+export default MenuItem;
 
 const styles = StyleSheet.create({
     menuItem: {
@@ -48,14 +64,19 @@ const styles = StyleSheet.create({
         color: '#CEC045'
 
     },
-    descripcion: {
+    description: {
         textAlign: 'center',
         fontSize: 11
 
     },
-    Precio: {
+    price: {
         textAlign: 'center',
         fontWeight: 'bold'
         
-    }
+    },
+    priceSection: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 })
