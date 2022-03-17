@@ -11,11 +11,11 @@ export default class MenuItem extends React.Component {
         return (
             <View style={styles.menuItem}>
                 <Image
-                source={this.props.itemImage}
+               /* source={{uri:itemImage}} */
                 style={styles.image} />
-                <Text style={styles.Text}> Flores Rojas</Text>
-                <Text style={styles.descripcion}> Rojo sobre lienzo Blanco</Text>
-                <Text style={styles.Precio}> 59.99€</Text>
+                <Text style={styles.Text}> {this.props.Title}</Text>
+                <Text style={styles.descripcion} > {this.props.Descripcion}</Text>
+                <Text style={styles.Precio}> {this.props.Price}</Text>
             </View>
      );
     }
