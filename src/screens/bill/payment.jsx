@@ -14,7 +14,7 @@ const Payment = ({route}) => {
 
     const goToConfirmPurchase = () => {
         if(titular, numTarjeta, cvv, mes, year){
-            if(numTarjeta.length == 16){
+            if(numTarjeta.length == 16 && !isNaN(numTarjeta)){
                 navigation.push("ConfirmPurchase", {data: datos});
             }
             else{
