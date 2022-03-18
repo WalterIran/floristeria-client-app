@@ -15,10 +15,15 @@ const Payment = ({route}) => {
     const goToConfirmPurchase = () => {
         if(titular, numTarjeta, cvv, mes, year){
             if(numTarjeta.length == 16 && !isNaN(numTarjeta)){
-                navigation.push("ConfirmPurchase", {data: datos});
+                if(!isNaN(cvv) && !isNaN(mes) && !isNaN(year)){
+                    navigation.push("ConfirmPurchase", {data: datos});
+                }
+                else{
+                    Alert.alert("Error", "Datos de la tarjeta no validos");    
+                }
             }
             else{
-                Alert.alert("Advertencia", "Porfavor ingrese un numero de tarjeta valido");
+                Alert.alert("Error", "Porfavor ingrese un numero de tarjeta valido");
             }
         }
         else{

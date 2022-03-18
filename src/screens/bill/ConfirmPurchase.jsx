@@ -16,6 +16,7 @@ const ConfirmPurchase = ({route}) => {
     const [subtotal, setSubTotal] = useState(null);
     const [isv, setIsv] = useState(null);
     const [total, setTotal] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     var datosDelivery = route.params.data;
 
@@ -34,6 +35,7 @@ const ConfirmPurchase = ({route}) => {
             )
             .then(res =>{
                 console.log(res);
+                setLoading(false);
                 goToSuccessfulPurchase();
             })
             .catch(err => {
@@ -47,6 +49,7 @@ const ConfirmPurchase = ({route}) => {
     }
 
     const pay = async () => {
+        setLoading(true);
         try {
             var datosPago = {
                 emailUser: auth?.user?.email,
@@ -155,6 +158,7 @@ const ConfirmPurchase = ({route}) => {
                                 onPress={pay}
                             >
                                 <Text style={styles.btnText} >Confirmar</Text>
+                                {loading && <ActivityIndicator size='small' color="#fff"/>}
                             </Pressable>
                         </View>
                     </ScrollView>
