@@ -6,7 +6,7 @@ import IonIcons from 'react-native-vector-icons/Ionicons';
 
 //Screens or navigators
 import UserNavigation from "./UserNavigation";
-import HomeScreen from '../screens/Home';
+import HomeNavigation from './HomeNavigation';
 import SearchNavigation from './SearchNavigation';
 import PaymentNavigation from './PaymentNavigation';
 import OrdersNavigation from './OrdersNavigation';
@@ -80,7 +80,7 @@ const TabNavigation = () => {
 
             <Tab.Screen 
                 name="Home" 
-                component={HomeScreen} 
+                component={HomeNavigation} 
                 options={{
                     headerShown: false,
                     tabBarLabel: "",

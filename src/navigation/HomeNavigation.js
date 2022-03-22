@@ -3,7 +3,7 @@ import Home from "../screens/Home";
 
 const Stack = createNativeStackNavigator();
 
-import Home from "../screens/Home";
+import HomeScreen from "../screens/Home";
 import ProductScreen from '../screens/product/Product.screen';
 
 const HomeNavigation = () => {
@@ -12,7 +12,7 @@ const HomeNavigation = () => {
 
             <Stack.Screen 
                 name="HomeScreen"
-                component={Home}
+                component={HomeScreen}
                 options={{
                     headerShown: false
                 }}
