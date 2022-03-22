@@ -3,11 +3,21 @@ import {
     View, 
     Image, 
     StyleSheet,
-    Text
+    Text,
+    TouchableOpacity
 } from 'react-native';
 import { formatter } from '../utils/formatter';
+import { useNavigation } from '@react-navigation/native';
+
 
 const MenuItem = ({itemImage, title, description, price, discount, productId}) => {
+    const navigation = useNavigation();
+
+    const goTo = (id) => {
+        navigation.navigate('ProductScreen', {productId});
+        
+    }
+    
     const priceStyle = {
         fontWeight: '700',
         color: discount > 0 ? '#aaa' :'#333',
@@ -15,6 +25,7 @@ const MenuItem = ({itemImage, title, description, price, discount, productId}) =
     }
 
     return (
+        <TouchableOpacity style={{width: '100%'}} onPress={() => goTo(productId)}>
         <View style={styles.menuItem}>
             <Image
                 source={{uri:itemImage}}
@@ -32,6 +43,7 @@ const MenuItem = ({itemImage, title, description, price, discount, productId}) =
                 <Text style={priceStyle}> {formatter.format(price)}</Text>
             </View>
         </View>
+        </TouchableOpacity>
     );
 }
 

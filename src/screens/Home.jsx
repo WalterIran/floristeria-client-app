@@ -4,7 +4,6 @@ import axios from '../api/axios';
 import MenuItem from '../components/MenuItem';
 
 
-
 const newstProductURL = '/products/newest';
 const withDiscountProdURL = '/products/with-discount';
 
@@ -97,6 +96,7 @@ const Home = () => {
                     return (
                       <MenuItem 
                         key={product.id}
+                        productId = {product.id}
                         title={product.productName}
                         description={product.productDescriptionTitle}
                         price={parseFloat(product.price)}
@@ -130,6 +130,7 @@ const Home = () => {
                       return (
                         <MenuItem 
                           key={product.id}
+                          productId = {product.id}
                           title={product.productName}
                           description={product.productDescriptionTitle}
                           price={parseFloat(product.price)}
