@@ -1,7 +1,7 @@
 import { API_URL } from '@env';
 import axios from 'axios';
 
-const BASE_URL = API_URL !== null && API_URL !== '' ? `${API_URL}/api/v1` : "http://LOCALPRIVATEIP:PORT/api/v1";
+const BASE_URL = `${API_URL}/api/v1`;
 
 export default axios.create({
     baseURL: BASE_URL
