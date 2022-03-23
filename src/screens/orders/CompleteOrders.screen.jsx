@@ -17,6 +17,7 @@ const Orders = () => {
   const { auth } = useAuth();
   const [orders, setOrders] = useState([]);
   const [ isNext, setIsNext ] = useState(false);
+  const [ isLoading, setIsLoading] = useState(false);
 
   const goToOrderDetail = (billId) => {
     navigation.navigate('OrderDetail', {billId});
@@ -29,6 +30,7 @@ const Orders = () => {
   }, []);
 
   const loadOrders = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosPrivate.get(`orders/byuser/${auth.user.id}/confirmed?limit=${LIMIT}&page=${PAGE}`);
       setOrders([...orders, ...response.data.orders]);
@@ -40,6 +42,8 @@ const Orders = () => {
       }
     } catch (error) {
       console.error(error);
+    }finally{
+      setIsLoading(false);
     }
   }
   
@@ -47,7 +51,7 @@ const Orders = () => {
   return (
     <SafeAreaView>
       {
-        orders.length > 0 ? (
+        orders.length > 0 || !isLoading ? (
           <FlatList 
             data={orders}
             numColumns={1}
